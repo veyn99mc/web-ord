@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order Nhanh</title>
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --text:#18212b; --muted:#667085; --line:#e3e7ec;
+  --dish:#2563eb; --dish-bg:#dbeafe; --top:#2563eb; --top-bg:#dbeafe;
+  --note:#dc2626; --note-bg:#fee2e2; --table:#0f766e; --table-bg:#ccfbf1;
+  --send:#16a34a; --danger:#dc2626; --shadow:0 4px 18px rgba(16,24,40,.07);
+}
+html[data-theme="dark"]{
+  --bg:#0f141a; --card:#1a222d; --text:#eef2f6; --muted:#9aa7b4; --line:#2c3745;
+  --dish-bg:#1d355e; --top:#fde047; --top-bg:#3a3410; --note-bg:#572424; --table-bg:#123f3a;
+  --shadow:0 4px 18px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:0 12px 190px}
+header{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 2px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{font-size:21px;margin:0}
+.head-btns{display:flex;gap:8px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:9px 13px;font-size:14px;font-weight:650;cursor:pointer}
+.btn:active{transform:scale(.97)}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px;margin-top:12px;scroll-margin-top:76px}
+.sec-head{display:flex;align-items:center;gap:9px;margin:0 0 12px}
+.sec-head h2{font-size:17px;margin:0}
+.step{width:26px;height:26px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800;flex:0 0 auto}
+.step.dish{background:var(--dish)} .step.top{background:var(--top)} .step.note{background:var(--note)} .step.table{background:var(--table)} .step.list{background:#475569}
+.grid{display:grid;gap:9px}
+.grid.dishes{grid-template-columns:repeat(3,1fr)}
+.grid.toppings{grid-template-columns:repeat(3,1fr)}
+.grid.tables{grid-template-columns:repeat(5,1fr);gap:7px}
+.tag{min-height:58px;border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;padding:8px 4px}
+.tag:active{transform:scale(.97)}
+.tag.on-dish{background:var(--dish-bg);border-color:var(--dish);color:var(--dish)}
+.tag.on-top{background:var(--top-bg);border-color:var(--top);color:var(--top)}
+.tag.table{min-height:46px;font-size:16px;border-radius:11px}
+.tag.on-table{background:var(--table-bg);border-color:var(--table);color:var(--table)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:46px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--text);font-size:15.5px;font-weight:650;cursor:pointer}
+.chip.on-note{background:var(--note-bg);border-color:var(--note);color:var(--note)}
+.add-bowl-wide{width:100%;margin-top:14px;padding:14px;border:none;border-radius:14px;background:var(--dish);color:#fff;font-size:16px;font-weight:800;cursor:pointer}
+.add-bowl-wide:active{transform:scale(.98)}
+.add-bowl-wide small{display:block;font-weight:600;font-size:13px;opacity:.9;margin-top:2px}
+.summary{margin-top:12px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:15.5px;min-height:44px}
+.summary .s-table{color:var(--table);font-weight:800}
+.summary .s-dish{font-weight:800}
+.summary .s-top{color:var(--top);font-weight:700}
+.summary .s-note{color:var(--note);font-weight:700;font-style:italic}
+.summary .draft-line{display:block;margin-top:5px;font-size:14.5px;color:var(--muted)}
+.empty{color:var(--muted);font-size:14px;margin:4px 0}
+/* 2 nút tròn nhỏ bên phải: thêm tô + xuống bàn */
+.side-btns{position:fixed;right:10px;top:38%;z-index:40;display:flex;flex-direction:column;gap:10px}
+.round-btn{width:56px;height:56px;border-radius:50%;border:none;color:#fff;font-size:12px;font-weight:800;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer;line-height:1.15}
+.round-btn:active{transform:scale(.94)}
+.round-btn.add{background:var(--dish)}
+.round-btn.jump{background:var(--table)}
+.round-btn .big{display:block;font-size:19px;line-height:1.05}
+body[data-view="all"] .side-btns, body[data-view="edit"] .side-btns,
+body[data-view="all"] .send-btn, body[data-view="edit"] .send-btn,
+body[data-view="all"] .draft-bar, body[data-view="edit"] .draft-bar{display:none}
+/* Khay các tô đang chờ gửi — hiện ra ngay khi thêm tô đầu tiên */
+.draft-bar{position:fixed;left:12px;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:39;max-width:536px;margin:0 auto;background:var(--card);border:2px solid var(--dish);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.22);padding:10px 12px;max-height:168px;overflow:auto}
+.draft-bar h4{margin:0 0 6px;font-size:14.5px;color:var(--dish)}
+.draft-item{display:flex;align-items:center;gap:7px;font-size:15px;padding:4px 0}
+.draft-item .d-main{flex:1}
+.draft-item .d-top{color:var(--top);font-weight:700}
+.draft-item .d-note{color:var(--note);font-weight:650;font-style:italic}
+.draft-item .d-qty{font-weight:850;color:var(--dish)}
+.draft-item .d-del{border:none;background:transparent;color:var(--muted);font-size:16px;cursor:pointer;padding:4px 6px}
+.draft-item.live{background:var(--dish-bg);border-radius:10px;padding:6px 8px;margin-top:4px}
+.draft-item .live-tag{font-size:11.5px;font-weight:800;color:var(--dish);background:var(--card);border:1px solid var(--dish);border-radius:999px;padding:2px 7px;white-space:nowrap}
+/* Nút gửi món + nút xem tất cả luôn nổi */
+.send-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;border:none;background:var(--send);color:#fff;border-radius:999px;padding:17px 22px;font-size:17.5px;font-weight:850;box-shadow:0 10px 26px rgba(22,163,74,.45);cursor:pointer}
+.send-btn:active{transform:scale(.96)}
+.send-btn.pulse{animation:pulse 1s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}100%{box-shadow:0 0 0 16px rgba(22,163,74,0)}}
+.viewall-btn{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;border:none;background:#475569;color:#fff;border-radius:999px;padding:17px 20px;font-size:16.5px;font-weight:800;box-shadow:0 10px 26px rgba(71,85,105,.4);cursor:pointer}
+.viewall-btn:active{transform:scale(.96)}
+.viewall-btn .cnt{background:#fff;color:#475569;border-radius:999px;padding:1px 8px;margin-left:6px;font-size:14px}
+/* Trang xem tất cả — gọn: 1 dòng số bàn, mỗi bàn 1 khối, mỗi dòng 1 món thẳng hàng */
+.table-count-line{font-size:14.5px;color:var(--muted);font-weight:650;margin:2px 0 4px}
+.tbl-block{padding:11px 0 9px;border-top:1px solid var(--line)}
+.tbl-block:first-of-type{border-top:none}
+.tbl-head{display:flex;align-items:center;gap:9px}
+.badge-table{background:var(--card);color:var(--table);border:2px solid var(--table);font-weight:850;font-size:14px;border-radius:9px;padding:5px 10px;white-space:nowrap}
+.tbl-head .spacer{flex:1}
+.tbl-dish{font-size:15px;line-height:1.5;padding:3px 0 0 4px}
+.tbl-dish .t-top{color:var(--top);font-weight:700}
+.tbl-dish .t-note{color:var(--note);font-weight:650;font-style:italic}
+.tbl-dish .t-qty{font-weight:850;color:var(--dish)}
+.finish-btn{border:1px solid var(--danger);background:var(--note-bg);color:var(--danger);border-radius:999px;padding:6px 11px;font-weight:750;font-size:13px;cursor:pointer;white-space:nowrap}
+.finish-btn:active{transform:scale(.96)}
+/* Panel sửa tag */
+.tabs{display:flex;gap:7px;margin-bottom:12px}
+.tab-btn{flex:1;padding:10px 4px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-weight:750;cursor:pointer}
+.tab-btn.active{border-color:var(--note);color:var(--note);background:var(--note-bg)}
+.edit-row{display:flex;align-items:center;gap:7px;padding:8px 0;border-bottom:1px solid var(--line)}
+.edit-row span{flex:1;font-weight:650}
+.small-btn{padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:13.5px;font-weight:650;cursor:pointer}
+.small-btn.danger{color:var(--danger);border-color:var(--danger)}
+.add-row{display:flex;gap:8px;margin-top:12px}
+.add-row input{flex:1;min-width:0;padding:11px;border:1px solid var(--line);border-radius:10px;font-size:16px;background:var(--card);color:var(--text)}
+.add-btn{background:var(--send);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}
+.add-btn.editing{background:var(--dish)}
+.edit-block{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.edit-block h3{margin:0 0 9px;font-size:15px}
+.file-btns{display:flex;gap:8px;flex-wrap:wrap}
+/* Hộp thoại ngay trong trang */
+.modal-wrap{position:fixed;inset:0;z-index:80;background:rgba(10,15,20,.55);display:grid;place-items:end center}
+@media(min-width:560px){.modal-wrap{place-items:center}}
+.modal{background:var(--card);color:var(--text);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.3)}
+@media(min-width:560px){.modal{border-radius:20px}}
+.modal h3{margin:0 0 8px;font-size:18px}
+.modal p{margin:0 0 14px;color:var(--muted);font-size:15px;white-space:pre-line}
+.modal input{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;font-size:19px;text-align:center;letter-spacing:.2em;background:var(--card);color:var(--text)}
+.modal-btns{display:flex;gap:9px;margin-top:14px}
+.modal-btns button{flex:1;padding:14px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--text)}
+.modal-btns .primary{background:var(--send);border-color:var(--send);color:#fff}
+.modal-btns .primary.danger{background:var(--danger);border-color:var(--danger)}
+.modal .err{color:var(--danger);font-size:14px;font-weight:650;margin-top:9px;min-height:18px;text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:96px;z-index:90;background:#18212b;color:#fff;padding:12px 18px;border-radius:999px;font-size:15px;font-weight:650;opacity:0;pointer-events:none;transition:.25s;max-width:92vw;text-align:center}
+html[data-theme="dark"] .toast{background:#eef2f6;color:#18212b}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}
+</style>
+</head>
+<body data-view="order">
+<div class="wrap">
+  <header>
+    <h1>⚡ Order Nhanh</h1>
+    <div class="head-btns">
+      <button class="btn" id="themeBtn" type="button" title="Đổi sáng / tối">🌙 Tối</button>
+      <button class="btn" id="editBtn" type="button">✏️ Sửa tag</button>
+    </div>
+  </header>
+
+  <!-- ============ TRANG ORDER ============ -->
+  <div id="viewOrder">
+    <section class="card" id="secDish">
+      <div class="sec-head"><span class="step dish">1</span><h2>Chọn món</h2></div>
+      <div class="grid dishes" id="dishGrid"></div>
+    </section>
+
+    <section class="card" id="secTopping">
+      <div class="sec-head"><span class="step top">2</span><h2>Topping</h2></div>
+      <div class="grid toppings" id="toppingGrid"></div>
+    </section>
+
+    <section class="card" id="secNote">
+      <div class="sec-head"><span class="step note">3</span><h2>Ghi chú nhanh</h2></div>
+      <div class="chips" id="noteChips"></div>
+      <button class="add-bowl-wide" id="addBowlWideBtn" type="button">＋ Thêm tô này, chọn tiếp tô khác<small>Lặp lại bao nhiêu tô cũng được — chọn xong hết mới bấm Gửi món 1 lần</small></button>
+    </section>
+
+    <section class="card" id="secTable">
+      <div class="sec-head"><span class="step table">4</span><h2>Chọn bàn</h2></div>
+      <div class="grid tables" id="tableGrid"></div>
+      <div class="summary" id="summaryBox"><span class="empty">Đang chọn: chưa chọn món…</span></div>
+    </section>
+  </div>
+
+  <!-- ============ TRANG XEM TẤT CẢ (tổng quát, gọn) ============ -->
+  <div id="viewAll" class="hidden">
+    <section class="card">
+      <div class="sec-head"><span class="step list">✓</span><h2>Tất cả món đã order</h2></div>
+      <div class="table-count-line" id="tableCountLine"></div>
+      <div id="allList"></div>
+    </section>
+  </div>
+
+  <!-- ============ TRANG SỬA TAG ============ -->
+  <div id="viewEdit" class="hidden">
+    <section class="card">
+      <div class="sec-head"><span class="step note">✎</span><h2>Sửa tag nhanh</h2></div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="dishes" type="button">Món</button>
+        <button class="tab-btn" data-tab="toppings" type="button">Topping</button>
+        <button class="tab-btn" data-tab="notes" type="button">Ghi chú</button>
+        <button class="tab-btn" data-tab="tables" type="button">Bàn</button>
+      </div>
+      <div id="editList"></div>
+      <div class="add-row">
+        <input id="newTagInput" type="text" placeholder="Nhập tag mới…" autocomplete="off">
+        <button class="add-btn" id="addTagBtn" type="button">+ Thêm</button>
+        <button class="small-btn hidden" id="cancelRenameBtn" type="button">Huỷ</button>
+      </div>
+
+      <div class="edit-block">
+        <h3>Xuất / Nhập món + tag nhanh</h3>
+        <div class="file-btns">
+          <button class="small-btn" id="exportBtn" type="button">⬇️ Xuất file</button>
+          <label class="small-btn" for="importFile" style="cursor:pointer">⬆️ Nhập file</label>
+          <input id="importFile" type="file" accept="application/json,.json" class="hidden">
+          <button class="small-btn" id="closeEditBtn" type="button">🔒 Khoá &amp; quay lại</button>
+        </div>
+        <p class="empty" style="margin-top:9px">Xuất file này mang sang máy khác, bấm Nhập file là toàn bộ món / topping / ghi chú / bàn được cập nhật theo.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- 2 nút tròn nhỏ bên phải -->
+<div class="side-btns">
+  <button class="round-btn add" id="addBowlBtn" type="button" title="Thêm tô đang chọn vào danh sách chờ gửi"><span class="big">＋</span>TÔ</button>
+  <button class="round-btn jump" id="jumpTableBtn" type="button" title="Xuống chọn bàn">BÀN<span class="big">⬇</span></button>
+</div>
+
+<!-- Khay tô đang chờ gửi -->
+<div class="draft-bar hidden" id="draftBar">
+  <h4 id="draftTitle">🧺 Đang chờ gửi: 0 tô</h4>
+  <div id="draftList"></div>
+</div>
+
+<button class="viewall-btn" id="viewAllBtn" type="button">📋 Xem tất cả<span class="cnt" id="viewAllCount">0</span></button>
+<button class="send-btn" id="sendBtn" type="button">📤 <span id="sendLabel">Gửi món</span></button>
+
+<!-- Hộp nhập mật khẩu -->
+<div class="modal-wrap hidden" id="pwModal">
+  <div class="modal">
+    <h3>🔒 Nhập mật khẩu sửa tag</h3>
+    <p>Chỉ người biết mật khẩu mới sửa được món / topping / ghi chú / bàn.</p>
+    <input id="pwInput" type="password" inputmode="numeric" autocomplete="off" placeholder="••••">
+    <div class="err" id="pwErr"></div>
+    <div class="modal-btns">
+      <button type="button" id="pwCancelBtn">Huỷ</button>
+      <button type="button" class="primary" id="pwOkBtn">Mở sửa</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hộp xác nhận -->
+<div class="modal-wrap hidden" id="confirmModal">
+  <div class="modal">
+    <h3 id="confirmTitle">Xác nhận</h3>
+    <p id="confirmMsg"></p>
+    <div class="modal-btns">
+      <button type="button" id="confirmCancelBtn">Huỷ</button>
+      <button type="button" class="primary danger" id="confirmOkBtn">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const EDIT_PASSWORD = "0000"; // mật khẩu sửa tag — đổi số trong dấu ngoặc này nếu muốn
+
+const DEFAULT_CONFIG = {
+  dishes:   ["Phở", "Bún", "Miến"],
+  toppings: ["Tái", "Nạm", "Gầu", "Gân", "Bò viên", "Sách"],
+  notes:    ["ko hành", "ko rau", "ko tiêu", "thêm hành", "ít bún", "nhiều bún", "ko béo", "nhiều béo"],
+  // Bàn là danh sách thêm tay, không tự sinh số chạy
+  tables:   ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"]
+};
+
+function normalizeConfig(raw){
+  const cfg = Object.assign({}, DEFAULT_CONFIG, raw || {});
+  if(!Array.isArray(cfg.tables) || !cfg.tables.length){
+    const n = Math.min(60, Math.max(1, Number(cfg.tableCount) || 20));
+    cfg.tables = Array.from({length:n}, (_,i) => String(i+1));
+  }
+  cfg.tables = cfg.tables.map(x => String(x));
+  delete cfg.tableCount;
+  return cfg;
+}
+function tableName(label){
+  const s = String(label);
+  return /^bàn\b/i.test(s.trim()) ? s : "Bàn " + s;
+}
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store = {
+  get(k, fb){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; }catch{ return fb; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} }
+};
+const itemKey = it => it.dish + "|" + (it.toppings||[]).join(",") + "|" + (it.notes||[]).join(",");
+const bowlText = it => `${it.dish}${it.toppings && it.toppings.length ? " " + it.toppings.join(" ") : ""}${it.notes && it.notes.length ? " (" + it.notes.join(", ") + ")" : ""}`;
+
+let config = normalizeConfig(store.get("orderNhanhConfigV1", {}));
+let orders = store.get("orderNhanhOrdersV1", []).map(o => Object.assign({qty:1}, o, { table: String(o.table), qty: Number(o.qty) || 1 }));
+let draft  = store.get("orderNhanhDraftV1", []); // các tô đang chờ gửi (chưa gửi)
+let sel = { dish:null, toppings:new Set(), notes:new Set(), table:null };
+let editTab = "dishes", editUnlocked = false, renaming = null;
+let currentView = "order";
+
+// ---------- Chuyển trang ----------
+function refreshViewAllBtn(){
+  const totalBowls = orders.reduce((s,o) => s + (Number(o.qty)||1), 0);
+  $("#viewAllBtn").innerHTML = currentView === "order"
+    ? `📋 Xem tất cả<span class="cnt">${totalBowls}</span>` : "← Quay lại order";
+}
+function showView(v){
+  currentView = v;
+  document.body.dataset.view = v;
+  $("#viewOrder").classList.toggle("hidden", v !== "order");
+  $("#viewAll").classList.toggle("hidden", v !== "all");
+  $("#viewEdit").classList.toggle("hidden", v !== "edit");
+  refreshViewAllBtn();
+  window.scrollTo({top:0});
+}
+$("#viewAllBtn").addEventListener("click", () => {
+  if(currentView === "order"){ renderAllOrders(); showView("all"); }
+  else showView("order");
+});
+
+// ---------- Sáng / tối ----------
+function applyTheme(t){
+  document.documentElement.dataset.theme = t;
+  $("#themeBtn").textContent = t === "dark" ? "☀️ Sáng" : "🌙 Tối";
+  store.set("orderNhanhTheme", t);
+}
+applyTheme(store.get("orderNhanhTheme", "light"));
+$("#themeBtn").addEventListener("click", () =>
+  applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+
+// ---------- Hộp xác nhận trong trang ----------
+let confirmCb = null;
+function askConfirm(title, msg, okText, cb){
+  $("#confirmTitle").textContent = title;
+  $("#confirmMsg").textContent = msg;
+  $("#confirmOkBtn").textContent = okText || "Đồng ý";
+  confirmCb = cb;
+  $("#confirmModal").classList.remove("hidden");
+}
+$("#confirmCancelBtn").addEventListener("click", () => { $("#confirmModal").classList.add("hidden"); confirmCb = null; });
+$("#confirmOkBtn").addEventListener("click", () => {
+  $("#confirmModal").classList.add("hidden");
+  if(confirmCb) confirmCb();
+  confirmCb = null;
+});
+
+// ---------- Render tag chọn ----------
+function orderedSel(set, list){ return list.filter(x => set.has(x)); }
+
+function renderPickers(){
+  $("#dishGrid").innerHTML = config.dishes.map(d =>
+    `<button type="button" class="tag ${sel.dish===d?"on-dish":""}" data-dish="${esc(d)}">${esc(d)}</button>`).join("")
+    || '<p class="empty">Chưa có món — bấm Sửa tag để thêm.</p>';
+  $("#toppingGrid").innerHTML = config.toppings.map(t =>
+    `<button type="button" class="tag ${sel.toppings.has(t)?"on-top":""}" data-top="${esc(t)}">${esc(t)}</button>`).join("")
+    || '<p class="empty">Chưa có topping.</p>';
+  $("#noteChips").innerHTML = config.notes.map(n =>
+    `<button type="button" class="chip ${sel.notes.has(n)?"on-note":""}" data-note="${esc(n)}">${esc(n)}</button>`).join("")
+    || '<p class="empty">Chưa có tag ghi chú.</p>';
+  $("#tableGrid").innerHTML = config.tables.map(t =>
+    `<button type="button" class="tag table ${sel.table===t?"on-table":""}" data-table="${esc(t)}">${esc(t)}</button>`).join("")
+    || '<p class="empty">Chưa có bàn nào — vào Sửa tag, mục Bàn để thêm tay.</p>';
+  renderSummary();
+  renderDraft();
+}
+
+function currentBowl(){
+  if(!sel.dish) return null;
+  return { dish: sel.dish, toppings: orderedSel(sel.toppings, config.toppings), notes: orderedSel(sel.notes, config.notes), qty: 1 };
+}
+function draftBowls(){ return draft.reduce((s,it) => s + it.qty, 0); }
+
+function renderSummary(){
+  const box = $("#summaryBox");
+  const cur = currentBowl();
+  let html = "";
+  if(!cur) html = '<span class="empty">Đang chọn: chưa chọn món…</span>';
+  else html = "Tô đang chọn: " +
+    (sel.table ? `<span class="s-table">${esc(tableName(sel.table))}</span> · ` : "") +
+    `<span class="s-dish">${esc(cur.dish)}${cur.toppings.length ? ' <span class="s-top">' + esc(cur.toppings.join(" ")) + "</span>" : ""}</span>` +
+    (cur.notes.length ? ` <span class="s-note">(${esc(cur.notes.join(", "))})</span>` : "") +
+    (!sel.table ? ' · <span class="empty">chưa chọn bàn</span>' : "");
+  if(draft.length)
+    html += draft.map(it => `<span class="draft-line">🧺 Đã thêm: <strong>${esc(it.dish)}${it.toppings.length ? " " + esc(it.toppings.join(" ")) : ""}</strong>${it.notes.length ? ' <span class="s-note">(' + esc(it.notes.join(", ")) + ")</span>" : ""} <strong>×${it.qty} tô</strong></span>`).join("");
+  box.innerHTML = html;
+}
+
+// ---------- Khay chờ gửi + nhãn nút Gửi ----------
+function renderDraft(){
+  const bar = $("#draftBar");
+  const cur = currentBowl();
+  const has = draft.length > 0 || Boolean(cur); // tô đang chọn cũng hiện luôn, không cần ấn + mới thấy
+  bar.classList.toggle("hidden", !has);
+  if(has){
+    const total = draftBowls() + (cur ? 1 : 0);
+    $("#draftTitle").textContent = `🧺 Danh sách sẽ gửi: ${total} tô${sel.table ? " — " + tableName(sel.table) : ""}`;
+    $("#draftList").innerHTML = draft.map((it, idx) => `
+      <div class="draft-item">
+        <span class="d-main"><strong>${esc(it.dish)}${it.toppings.length ? ' <span class="d-top">' + esc(it.toppings.join(" ")) + "</span>" : ""}</strong>${it.notes.length ? ' <span class="d-note">(' + esc(it.notes.join(", ")) + ")</span>" : ""}</span>
+        <span class="d-qty">×${it.qty}</span>
+        <button type="button" class="d-del" data-del-draft="${idx}" title="Bỏ tô này khỏi chờ gửi">✕</button>
+      </div>`).join("") + (cur ? `
+      <div class="draft-item live">
+        <span class="d-main"><strong>${esc(cur.dish)}${cur.toppings.length ? ' <span class="d-top">' + esc(cur.toppings.join(" ")) + "</span>" : ""}</strong>${cur.notes.length ? ' <span class="d-note">(' + esc(cur.notes.join(", ")) + ")</span>" : ""}</span>
+        <span class="live-tag">đang chọn</span>
+        <span class="d-qty">×1</span>
+        <button type="button" class="d-del" data-clear-current="1" title="Bỏ tô đang chọn">✕</button>
+      </div>` : "");
+  }
+  const total = draftBowls() + (sel.dish ? 1 : 0);
+  $("#sendLabel").textContent = total > 0 ? `Gửi món (${total} tô)` : "Gửi món";
+  $("#sendBtn").classList.toggle("pulse", Boolean(total > 0 && sel.table));
+}
+
+// ---------- Thêm tô đang chọn vào chờ gửi ----------
+function addCurrentBowl(scrollUp = true){
+  const bowl = currentBowl();
+  if(!bowl){ toast("Chưa chọn món — chọn món trước rồi mới thêm tô"); scrollToId("secDish"); return; }
+  const key = itemKey(bowl);
+  const found = draft.find(it => itemKey(it) === key);
+  if(found) found.qty += 1; else draft.push(bowl); // giống hệt nhau thì gộp số tô
+  store.set("orderNhanhDraftV1", draft);
+  sel.dish = null; sel.toppings.clear(); sel.notes.clear(); // giữ nguyên bàn đã chọn (nếu có)
+  renderPickers();
+  toast(`Đã thêm: ${bowlText(bowl)} — đang chờ gửi ${draftBowls()} tô`);
+  if(scrollUp) scrollToId("secDish");
+}
+$("#addBowlBtn").addEventListener("click", () => addCurrentBowl(true));
+$("#addBowlWideBtn").addEventListener("click", () => addCurrentBowl(true));
+
+// ---------- Trang xem tất cả: tổng quát, mỗi bàn 1 hàng, không nút x ----------
+function aggregate(list){
+  const map = new Map();
+  list.forEach(o => {
+    const k = itemKey(o);
+    if(!map.has(k)) map.set(k, { dish:o.dish, toppings:o.toppings||[], notes:o.notes||[], qty:0 });
+    map.get(k).qty += Number(o.qty) || 1;
+  });
+  return [...map.values()];
+}
+function renderAllOrders(){
+  const groups = new Map();
+  orders.forEach(o => { if(!groups.has(o.table)) groups.set(o.table, []); groups.get(o.table).push(o); });
+  $("#tableCountLine").textContent = orders.length ? `${groups.size} bàn đang ăn` : "";
+  $("#allList").innerHTML = orders.length ? [...groups.entries()].map(([t, list]) => `
+    <div class="tbl-block">
+      <div class="tbl-head">
+        <span class="badge-table">${esc(tableName(t))}</span>
+        <span class="spacer"></span>
+        <button type="button" class="finish-btn" data-finish="${esc(t)}">✔ Xong</button>
+      </div>
+      ${aggregate(list).map(it => `
+      <div class="tbl-dish"><strong>${esc(it.dish)}${it.toppings.length ? ' <span class="t-top">' + esc(it.toppings.join(" ")) + "</span>" : ""}</strong>${it.notes.length ? ' <span class="t-note">(' + esc(it.notes.join(", ")) + ")</span>" : ""}${it.qty > 1 ? ' <span class="t-qty">×' + it.qty + "</span>" : ""}</div>`).join("")}
+    </div>`).join("") : '<p class="empty">Chưa order món nào.</p>';
+  refreshViewAllBtn();
+}
+
+// ---------- Chọn & điều hướng ----------
+const scrollToId = id => document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"});
+
+document.addEventListener("click", e => {
+  const hit = a => e.target.closest("[" + a + "]");
+  let el;
+  if((el = hit("data-dish"))){
+    sel.dish = el.dataset.dish;
+    renderPickers();
+    setTimeout(() => scrollToId("secTopping"), 180);
+    return;
+  }
+  if((el = hit("data-top"))){
+    const t = el.dataset.top; sel.toppings.has(t) ? sel.toppings.delete(t) : sel.toppings.add(t);
+    renderPickers(); return;
+  }
+  if((el = hit("data-note"))){
+    const n = el.dataset.note; sel.notes.has(n) ? sel.notes.delete(n) : sel.notes.add(n);
+    renderPickers(); return;
+  }
+  if((el = hit("data-table"))){
+    sel.table = el.dataset.table;
+    renderPickers(); return;
+  }
+  if((el = hit("data-del-draft"))){
+    draft.splice(Number(el.dataset.delDraft), 1);
+    store.set("orderNhanhDraftV1", draft);
+    renderPickers(); return;
+  }
+  if((el = hit("data-clear-current"))){
+    sel.dish = null; sel.toppings.clear(); sel.notes.clear();
+    renderPickers(); return;
+  }
+  if((el = hit("data-finish"))){
+    const t = el.dataset.finish;
+    askConfirm(`${tableName(t)} xong thật sự?`, `Toàn bộ món của ${tableName(t)} sẽ bị xoá khỏi danh sách đã order.`, "Xong, xoá bàn này", () => {
+      orders = orders.filter(o => String(o.table) !== t);
+      store.set("orderNhanhOrdersV1", orders); renderAllOrders();
+      toast(`Đã xong và xoá dữ liệu ${tableName(t)}`);
+    });
+    return;
+  }
+});
+
+$("#jumpTableBtn").addEventListener("click", () => scrollToId("secTable"));
+
+let toastTimer;
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+// ---------- Gửi món: gửi cả khay chờ + tô đang chọn (nếu có) ----------
+$("#sendBtn").addEventListener("click", () => {
+  const bowls = draft.map(it => Object.assign({}, it));
+  const cur = currentBowl();
+  if(cur){
+    const key = itemKey(cur);
+    const found = bowls.find(it => itemKey(it) === key);
+    if(found) found.qty += 1; else bowls.push(cur);
+  }
+  if(!bowls.length){ toast("Chưa chọn món — bấm chọn món ở trên trước"); scrollToId("secDish"); return; }
+  if(!sel.table){ toast("Chưa chọn bàn — bấm nút BÀN để xuống chọn bàn"); scrollToId("secTable"); return; }
+  const now = new Date().toLocaleTimeString("vi-VN", {hour:"2-digit", minute:"2-digit"});
+  bowls.forEach(b => orders.push({ id: Date.now() + Math.random(), time: now, table: sel.table, dish: b.dish, toppings: b.toppings, notes: b.notes, qty: b.qty }));
+  store.set("orderNhanhOrdersV1", orders);
+  const total = bowls.reduce((s,b) => s + b.qty, 0);
+  toast(`Đã gửi ${tableName(sel.table)}: ${total} tô`);
+  draft = []; store.set("orderNhanhDraftV1", draft);
+  sel = { dish:null, toppings:new Set(), notes:new Set(), table:null };
+  renderPickers(); renderAllOrders();
+  scrollToId("secDish");
+});
+
+// ---------- Sửa tag: mật khẩu trong trang ----------
+$("#editBtn").addEventListener("click", () => {
+  if(editUnlocked){ showView("edit"); renderEdit(); return; }
+  $("#pwInput").value = ""; $("#pwErr").textContent = "";
+  $("#pwModal").classList.remove("hidden");
+  setTimeout(() => $("#pwInput").focus(), 60);
+});
+function tryPassword(){
+  if($("#pwInput").value === EDIT_PASSWORD){
+    editUnlocked = true;
+    $("#pwModal").classList.add("hidden");
+    showView("edit"); renderEdit();
+  } else {
+    $("#pwErr").textContent = "Sai mật khẩu, thử lại.";
+    $("#pwInput").select();
+  }
+}
+$("#pwOkBtn").addEventListener("click", tryPassword);
+$("#pwInput").addEventListener("keydown", e => { if(e.key === "Enter") tryPassword(); });
+$("#pwCancelBtn").addEventListener("click", () => $("#pwModal").classList.add("hidden"));
+$("#closeEditBtn").addEventListener("click", () => { editUnlocked = false; renaming = null; showView("order"); });
+
+document.querySelectorAll(".tab-btn").forEach(b => b.addEventListener("click", () => {
+  editTab = b.dataset.tab;
+  document.querySelectorAll(".tab-btn").forEach(x => x.classList.toggle("active", x === b));
+  resetRename();
+  renderEdit();
+}));
+
+function resetRename(){
+  renaming = null;
+  $("#newTagInput").value = "";
+  $("#addTagBtn").textContent = "+ Thêm";
+  $("#addTagBtn").classList.remove("editing");
+  $("#cancelRenameBtn").classList.add("hidden");
+}
+$("#cancelRenameBtn").addEventListener("click", resetRename);
+
+function renderEdit(){
+  const list = config[editTab];
+  $("#editList").innerHTML = list.length ? list.map(name => `
+    <div class="edit-row"><span>${esc(name)}</span>
+      <button type="button" class="small-btn" data-rename="${esc(name)}">Sửa</button>
+      <button type="button" class="small-btn danger" data-remove="${esc(name)}">Xoá</button>
+    </div>`).join("") : '<p class="empty">Chưa có tag nào.</p>';
+  $("#newTagInput").placeholder = {
+    dishes: "Nhập món mới…", toppings: "Nhập topping mới…",
+    notes: "Nhập ghi chú mới…", tables: "Nhập bàn mới, ví dụ: 21, A1, VIP, Mang về…"
+  }[editTab] || "Nhập tag mới…";
+
+  $("#editList").querySelectorAll("[data-rename]").forEach(b => b.addEventListener("click", () => {
+    renaming = b.dataset.rename;
+    $("#newTagInput").value = renaming;
+    $("#addTagBtn").textContent = "💾 Lưu sửa";
+    $("#addTagBtn").classList.add("editing");
+    $("#cancelRenameBtn").classList.remove("hidden");
+    $("#newTagInput").focus();
+  }));
+  $("#editList").querySelectorAll("[data-remove]").forEach(b => b.addEventListener("click", () => {
+    const name = b.dataset.remove;
+    askConfirm("Xoá tag này?", `"${name}" sẽ bị xoá khỏi danh sách chọn nhanh.`, "Xoá", () => {
+      config[editTab] = config[editTab].filter(x => x !== name);
+      if(renaming === name) resetRename();
+      afterConfigChange();
+    });
+  }));
+}
+
+function afterConfigChange(){
+  store.set("orderNhanhConfigV1", config);
+  if(sel.dish && !config.dishes.includes(sel.dish)) sel.dish = null;
+  sel.toppings = new Set([...sel.toppings].filter(t => config.toppings.includes(t)));
+  sel.notes = new Set([...sel.notes].filter(n => config.notes.includes(n)));
+  if(sel.table && !config.tables.includes(sel.table)) sel.table = null;
+  draft = draft.filter(it => config.dishes.includes(it.dish));
+  store.set("orderNhanhDraftV1", draft);
+  renderPickers(); renderEdit();
+}
+
+$("#addTagBtn").addEventListener("click", () => {
+  const v = $("#newTagInput").value.trim();
+  if(!v) return;
+  if(renaming){
+    if(v !== renaming && config[editTab].includes(v)){ toast("Tag này đã có rồi."); return; }
+    config[editTab] = config[editTab].map(x => x === renaming ? v : x);
+    resetRename(); afterConfigChange(); toast("Đã sửa tag");
+    return;
+  }
+  if(config[editTab].includes(v)){ toast("Tag này đã có rồi."); return; }
+  config[editTab].push(v);
+  $("#newTagInput").value = "";
+  afterConfigChange();
+});
+$("#newTagInput").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); $("#addTagBtn").click(); } });
+
+// ---------- Xuất / Nhập file ----------
+$("#exportBtn").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(config, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "order-nhanh-mon-va-tag.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast("Đã xuất file món + tag");
+});
+
+$("#importFile").addEventListener("change", e => {
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const d = JSON.parse(reader.result);
+      const ok = ["dishes","toppings","notes"].every(k => Array.isArray(d[k]) && d[k].every(x => typeof x === "string"));
+      if(!ok) throw new Error("bad");
+      askConfirm("Nhập file này?", "Toàn bộ món / topping / ghi chú / bàn hiện tại sẽ bị thay bằng dữ liệu trong file.", "Nhập, thay hết", () => {
+        config = normalizeConfig({ dishes:d.dishes, toppings:d.toppings, notes:d.notes, tables:d.tables, tableCount:d.tableCount });
+        sel = { dish:null, toppings:new Set(), notes:new Set(), table:null };
+        draft = []; store.set("orderNhanhDraftV1", draft);
+        resetRename(); afterConfigChange();
+        toast("Đã nhập xong — toàn bộ tag đã cập nhật");
+      });
+    }catch{ toast("File không đúng định dạng — hãy chọn file do nút Xuất file tạo ra."); }
+    e.target.value = "";
+  };
+  reader.readAsText(f);
+});
+
+renderPickers();
+renderAllOrders();
+showView("order");
+</script>
+</body>
+</html>
