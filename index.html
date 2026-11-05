@@ -43,9 +43,6 @@ section.card{background:var(--card);border:1px solid var(--line);border-radius:1
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{min-height:46px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--text);font-size:15.5px;font-weight:650;cursor:pointer}
 .chip.on-note{background:var(--note-bg);border-color:var(--note);color:var(--note)}
-.add-bowl-wide{width:100%;margin-top:14px;padding:14px;border:none;border-radius:14px;background:var(--dish);color:#fff;font-size:16px;font-weight:800;cursor:pointer}
-.add-bowl-wide:active{transform:scale(.98)}
-.add-bowl-wide small{display:block;font-weight:600;font-size:13px;opacity:.9;margin-top:2px}
 .summary{margin-top:12px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:15.5px;min-height:44px}
 .summary .s-table{color:var(--table);font-weight:800}
 .summary .s-dish{font-weight:800}
@@ -53,35 +50,38 @@ section.card{background:var(--card);border:1px solid var(--line);border-radius:1
 .summary .s-note{color:var(--note);font-weight:700;font-style:italic}
 .summary .draft-line{display:block;margin-top:5px;font-size:14.5px;color:var(--muted)}
 .empty{color:var(--muted);font-size:14px;margin:4px 0}
-/* 2 nút tròn nhỏ bên phải: thêm tô + xuống bàn */
-.side-btns{position:fixed;right:10px;top:38%;z-index:40;display:flex;flex-direction:column;gap:10px}
-.round-btn{width:56px;height:56px;border-radius:50%;border:none;color:#fff;font-size:12px;font-weight:800;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer;line-height:1.15}
+/* Thanh dock cố định SÁT ĐÁY: mọi nút điều khiển nằm trong thanh này,
+   có khoảng riêng của nó nên không đè lên topping / số bàn nữa */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.08);padding:9px 12px calc(9px + env(safe-area-inset-bottom))}
+.dock-in{max-width:536px;margin:0 auto;display:flex;align-items:center;gap:8px}
+.round-btn{width:46px;height:46px;flex:0 0 46px;border-radius:50%;border:none;color:#fff;font-size:11px;font-weight:800;cursor:pointer;line-height:1.1;padding:0}
 .round-btn:active{transform:scale(.94)}
 .round-btn.add{background:var(--dish)}
 .round-btn.jump{background:var(--table)}
-.round-btn .big{display:block;font-size:19px;line-height:1.05}
-body[data-view="all"] .side-btns, body[data-view="edit"] .side-btns,
+.round-btn .big{display:block;font-size:16px;line-height:1.05}
+body[data-view="all"] .round-btn, body[data-view="edit"] .round-btn,
 body[data-view="all"] .send-btn, body[data-view="edit"] .send-btn,
 body[data-view="all"] .draft-bar, body[data-view="edit"] .draft-bar{display:none}
-/* Khay các tô đang chờ gửi — hiện ra ngay khi thêm tô đầu tiên */
-.draft-bar{position:fixed;left:12px;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:39;max-width:536px;margin:0 auto;background:var(--card);border:2px solid var(--dish);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.22);padding:10px 12px;max-height:168px;overflow:auto}
+body.has-draft .wrap{padding-bottom:330px}
+/* Khay các tô đang chờ gửi — nằm ngay trên thanh dock, không che phần chọn món */
+.draft-bar{position:fixed;left:12px;right:12px;bottom:calc(82px + env(safe-area-inset-bottom));z-index:39;max-width:536px;margin:0 auto;background:var(--card);border:2px solid var(--dish);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.22);padding:10px 12px;max-height:168px;overflow:auto}
 .draft-bar h4{margin:0 0 6px;font-size:14.5px;color:var(--dish)}
-.draft-item{display:flex;align-items:center;gap:7px;font-size:15px;padding:4px 0}
-.draft-item .d-main{flex:1}
+.draft-item{display:flex;align-items:flex-start;gap:7px;font-size:15px;padding:4px 0}
+.draft-item .d-main{flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.4}
 .draft-item .d-top{color:var(--top);font-weight:700}
 .draft-item .d-note{color:var(--note);font-weight:650;font-style:italic}
 .draft-item .d-qty{font-weight:850;color:var(--dish)}
 .draft-item .d-del{border:none;background:transparent;color:var(--muted);font-size:16px;cursor:pointer;padding:4px 6px}
 .draft-item.live{background:var(--dish-bg);border-radius:10px;padding:6px 8px;margin-top:4px}
 .draft-item .live-tag{font-size:11.5px;font-weight:800;color:var(--dish);background:var(--card);border:1px solid var(--dish);border-radius:999px;padding:2px 7px;white-space:nowrap}
-/* Nút gửi món + nút xem tất cả luôn nổi */
-.send-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;border:none;background:var(--send);color:#fff;border-radius:999px;padding:17px 22px;font-size:17.5px;font-weight:850;box-shadow:0 10px 26px rgba(22,163,74,.45);cursor:pointer}
-.send-btn:active{transform:scale(.96)}
+/* Nút ALL + Gửi món nằm trong dock */
+.send-btn{flex:1;min-width:0;border:none;background:var(--send);color:#fff;border-radius:999px;padding:14px 10px;font-size:16.5px;font-weight:850;cursor:pointer;white-space:nowrap;overflow:hidden}
+.send-btn:active{transform:scale(.97)}
 .send-btn.pulse{animation:pulse 1s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}100%{box-shadow:0 0 0 16px rgba(22,163,74,0)}}
-.viewall-btn{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;border:none;background:#475569;color:#fff;border-radius:999px;padding:17px 20px;font-size:16.5px;font-weight:800;box-shadow:0 10px 26px rgba(71,85,105,.4);cursor:pointer}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}100%{box-shadow:0 0 0 12px rgba(22,163,74,0)}}
+.viewall-btn{flex:0 0 auto;border:none;background:#475569;color:#fff;border-radius:999px;padding:14px 16px;font-size:16px;font-weight:850;cursor:pointer;white-space:nowrap}
 .viewall-btn:active{transform:scale(.96)}
-.viewall-btn .cnt{background:#fff;color:#475569;border-radius:999px;padding:1px 8px;margin-left:6px;font-size:14px}
+.viewall-btn .cnt{background:#fff;color:#475569;border-radius:999px;padding:1px 7px;margin-left:5px;font-size:13.5px}
 /* Trang xem tất cả — gọn: 1 dòng số bàn, mỗi bàn 1 khối, mỗi dòng 1 món thẳng hàng */
 .table-count-line{font-size:14.5px;color:var(--muted);font-weight:650;margin:2px 0 4px}
 .tbl-block{padding:11px 0 9px;border-top:1px solid var(--line)}
@@ -127,6 +127,19 @@ body[data-view="all"] .draft-bar, body[data-view="edit"] .draft-bar{display:none
 html[data-theme="dark"] .toast{background:#eef2f6;color:#18212b}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .hidden{display:none!important}
+/* Màn hình điện thoại nhỏ: chữ và nút không chồng đè nhau */
+@media (max-width:390px){
+  h1{font-size:19px}
+  .head-btns .btn{padding:8px 10px;font-size:13px}
+  .grid.dishes,.grid.toppings{gap:7px}
+  .tag{min-height:52px;font-size:15.5px;padding:7px 3px}
+  .tag.table{min-height:42px;font-size:15px}
+  .chip{min-height:42px;font-size:14.5px;padding:7px 12px}
+  .tab-btn{font-size:13.5px;padding:9px 2px}
+  .send-btn{font-size:15.5px}
+  .draft-item{font-size:14.5px}
+  .tbl-dish{font-size:14.5px}
+}
 </style>
 </head>
 <body data-view="order">
@@ -154,7 +167,6 @@ html[data-theme="dark"] .toast{background:#eef2f6;color:#18212b}
     <section class="card" id="secNote">
       <div class="sec-head"><span class="step note">3</span><h2>Ghi chú nhanh</h2></div>
       <div class="chips" id="noteChips"></div>
-      <button class="add-bowl-wide" id="addBowlWideBtn" type="button">＋ Thêm tô này, chọn tiếp tô khác<small>Lặp lại bao nhiêu tô cũng được — chọn xong hết mới bấm Gửi món 1 lần</small></button>
     </section>
 
     <section class="card" id="secTable">
@@ -204,20 +216,21 @@ html[data-theme="dark"] .toast{background:#eef2f6;color:#18212b}
   </div>
 </div>
 
-<!-- 2 nút tròn nhỏ bên phải -->
-<div class="side-btns">
-  <button class="round-btn add" id="addBowlBtn" type="button" title="Thêm tô đang chọn vào danh sách chờ gửi"><span class="big">＋</span>TÔ</button>
-  <button class="round-btn jump" id="jumpTableBtn" type="button" title="Xuống chọn bàn">BÀN<span class="big">⬇</span></button>
-</div>
-
 <!-- Khay tô đang chờ gửi -->
 <div class="draft-bar hidden" id="draftBar">
   <h4 id="draftTitle">🧺 Đang chờ gửi: 0 tô</h4>
   <div id="draftList"></div>
 </div>
 
-<button class="viewall-btn" id="viewAllBtn" type="button">📋 Xem tất cả<span class="cnt" id="viewAllCount">0</span></button>
-<button class="send-btn" id="sendBtn" type="button">📤 <span id="sendLabel">Gửi món</span></button>
+<!-- Thanh dock sát đáy: ALL • + Tô • Bàn • Gửi món — không che phần chọn món -->
+<div class="dock">
+  <div class="dock-in">
+    <button class="viewall-btn" id="viewAllBtn" type="button" title="Xem tất cả món đã order">ALL<span class="cnt" id="viewAllCount">0</span></button>
+    <button class="round-btn add" id="addBowlBtn" type="button" title="Thêm tô đang chọn vào danh sách chờ gửi"><span class="big">＋</span>TÔ</button>
+    <button class="round-btn jump" id="jumpTableBtn" type="button" title="Xuống chọn bàn">BÀN<span class="big">⬇</span></button>
+    <button class="send-btn" id="sendBtn" type="button"><span id="sendLabel">Gửi món</span></button>
+  </div>
+</div>
 
 <!-- Hộp nhập mật khẩu -->
 <div class="modal-wrap hidden" id="pwModal">
@@ -294,7 +307,7 @@ let currentView = "order";
 function refreshViewAllBtn(){
   const totalBowls = orders.reduce((s,o) => s + (Number(o.qty)||1), 0);
   $("#viewAllBtn").innerHTML = currentView === "order"
-    ? `📋 Xem tất cả<span class="cnt">${totalBowls}</span>` : "← Quay lại order";
+    ? `ALL<span class="cnt">${totalBowls}</span>` : "← Order";
 }
 function showView(v){
   currentView = v;
@@ -383,6 +396,7 @@ function renderDraft(){
   const cur = currentBowl();
   const has = draft.length > 0 || Boolean(cur); // tô đang chọn cũng hiện luôn, không cần ấn + mới thấy
   bar.classList.toggle("hidden", !has);
+  document.body.classList.toggle("has-draft", has);
   if(has){
     const total = draftBowls() + (cur ? 1 : 0);
     $("#draftTitle").textContent = `🧺 Danh sách sẽ gửi: ${total} tô${sel.table ? " — " + tableName(sel.table) : ""}`;
@@ -418,7 +432,6 @@ function addCurrentBowl(scrollUp = true){
   if(scrollUp) scrollToId("secDish");
 }
 $("#addBowlBtn").addEventListener("click", () => addCurrentBowl(true));
-$("#addBowlWideBtn").addEventListener("click", () => addCurrentBowl(true));
 
 // ---------- Trang xem tất cả: tổng quát, mỗi bàn 1 hàng, không nút x ----------
 function aggregate(list){
