@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b5fe0">
+<title>VietQR nhanh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3fb;--card:#fff;--ink:#0f2a4a;--mute:#5d7089;--line:#d8e1ef;--acc:#1b5fe0;--acc-ink:#fff;--soft:#e4edff;--danger:#d6293e;--ok:#128a4b;--r:18px}
+:root[data-theme=dark]{--bg:#09131f;--card:#101e2f;--ink:#e8f0fb;--mute:#8ea3bd;--line:#1f3149;--acc:#4d8dff;--acc-ink:#06142a;--soft:#17294a;--danger:#ff6b7c;--ok:#4cd38a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:520px;margin:0 auto;padding:14px 14px 48px}
+header{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 14px}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px}.logo b{color:var(--acc)}.logo i{font-style:normal;color:var(--danger)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+h2{font-size:15px;margin:0 0 10px;font-weight:700}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+input,select,button{font:inherit;color:inherit}
+input[type=text],input[type=tel],select{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);outline:none}
+input:focus,select:focus,button:focus-visible{border-color:var(--acc);box-shadow:0 0 0 3px var(--soft)}
+button{cursor:pointer;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 14px;font-weight:500}
+button.p{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:700}
+button.d{color:var(--danger)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.icon{width:42px;height:42px;padding:0;border-radius:50%;font-size:18px}
+#amount{font-size:38px;font-weight:800;padding:14px 16px;letter-spacing:-1px}
+.real{min-height:24px;margin:8px 2px 0;color:var(--mute);font-size:14px}
+.real b{color:var(--ink);font-size:16px}
+.tags{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.tag{padding:14px 4px;font-weight:700;font-size:15px;border-radius:14px;text-align:center}
+.tag[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);transform:translateY(-1px)}
+.go{width:100%;padding:16px;font-size:18px;margin-top:6px;border-radius:14px}
+.msg{margin-top:10px;font-size:14px;color:var(--danger);min-height:0}
+.msg.ok{color:var(--ok)}
+#result{display:none;text-align:center}
+#result.show{display:block}
+#qrimg{width:100%;max-width:380px;border-radius:12px;background:#fff;display:block;margin:0 auto 10px;min-height:120px}
+.amt{font-size:30px;font-weight:800;letter-spacing:-.5px}
+.info{color:var(--mute);font-size:14px;margin:2px 0}
+.info b{color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.row>*{flex:1;min-width:110px}
+.acc{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.acc:first-of-type{border-top:0}
+.acc .t{flex:1;min-width:0}.acc .t div{overflow-wrap:anywhere}
+.acc .n{font-weight:700}.acc .s{font-size:13px;color:var(--mute)}
+.badge{font-size:11px;background:var(--soft);color:var(--acc);padding:2px 8px;border-radius:99px;font-weight:700;margin-left:6px;white-space:nowrap}
+.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.acts button{padding:6px 10px;font-size:13px}
+.chk{display:flex;align-items:center;gap:8px;margin:12px 0 0;color:var(--ink);font-size:15px}
+.chk input{width:20px;height:20px}
+.empty{color:var(--mute);font-size:14px;padding:6px 0}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;max-width:90vw;z-index:9}
+#toast.show{opacity:1;transform:translateX(-50%)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">Viet<b>QR</b><i>.</i></div>
+  <button class="icon" id="themeBtn" aria-label="Đổi giao diện sáng/tối" title="Sáng/tối">🌙</button>
+</header>
+
+<section class="card" id="mainCard">
+  <label for="accSel" style="margin-top:0">Tài khoản nhận tiền</label>
+  <select id="accSel"></select>
+  <label for="amount">Số tiền</label>
+  <input id="amount" type="text" inputmode="numeric" autocomplete="off" placeholder="VD: 25" aria-describedby="real">
+  <div class="real" id="real" aria-live="polite"></div>
+  <div class="tags" id="tags"></div>
+  <label for="note">Nội dung chuyển khoản (không bắt buộc)</label>
+  <input id="note" type="text" maxlength="50" autocomplete="off" placeholder="Để trống nếu không cần">
+  <div class="msg" id="msg" role="alert"></div>
+  <button class="p go" id="goBtn">TẠO QR</button>
+</section>
+
+<section class="card" id="result" aria-live="polite">
+  <img id="qrimg" alt="Mã QR chuyển khoản VietQR">
+  <div class="amt" id="rAmt"></div>
+  <div class="info" id="rBank"></div>
+  <div class="info" id="rNum"></div>
+  <div class="info" id="rName"></div>
+  <div class="info" id="rNote"></div>
+  <div class="row">
+    <button class="p" id="dlBtn">Tải ảnh QR</button>
+    <button id="shBtn">Chia sẻ</button>
+    <button id="newBtn">Tạo QR mới</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Quản lý tài khoản</h2>
+  <div id="accList"></div>
+  <form id="accForm" autocomplete="off" style="border-top:1px solid var(--line);margin-top:8px;padding-top:4px">
+    <input type="hidden" id="fId">
+    <label for="fBank">Ngân hàng</label>
+    <select id="fBank" required></select>
+    <label for="fNum">Số tài khoản</label>
+    <input id="fNum" type="tel" inputmode="numeric" maxlength="19" placeholder="Chỉ nhập số" required>
+    <label for="fName">Tên chủ tài khoản</label>
+    <input id="fName" type="text" maxlength="60" placeholder="NGUYEN VAN A" required>
+    <label class="chk"><input type="checkbox" id="fDef"> Đặt làm tài khoản mặc định</label>
+    <div class="msg" id="fMsg" role="alert"></div>
+    <div class="row">
+      <button class="p" type="submit" id="fSave">Thêm tài khoản</button>
+      <button type="button" id="fCancel" style="display:none">Hủy sửa</button>
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Sao lưu và khôi phục</h2>
+  <div class="row" style="margin-top:0">
+    <button id="exBtn">Xuất file JSON</button>
+    <button id="imBtn">Nhập file JSON</button>
+  </div>
+  <input type="file" id="imFile" accept="application/json,.json" hidden>
+  <div class="msg" id="bMsg"></div>
+</section>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="vietqr_data_v1";
+var BANKS=[["Vietcombank","970436"],["VietinBank","970415"],["BIDV","970418"],["Agribank","970405"],["MB Bank","970422"],["Techcombank","970407"],["ACB","970416"],["VPBank","970432"],["TPBank","970423"],["Sacombank","970403"],["HDBank","970437"],["VIB","970441"],["SHB","970443"],["MSB","970426"],["OCB","970448"],["SeABank","970440"],["Eximbank","970431"],["LPBank","970449"],["Nam A Bank","970428"],["Bac A Bank","970409"],["ABBank","970425"],["VietBank","970433"],["PVcomBank","970412"],["NCB","970419"],["BaoViet Bank","970438"],["Kienlongbank","970452"],["SCB","970429"],["Cake by VPBank","546034"],["Ubank by VPBank","546035"],["Timo","963388"],["Viettel Money","971005"],["MoMo","971025"]];
+var $=function(id){return document.getElementById(id)};
+var S={accounts:[],selectedId:null,theme:null,note:""};
+var amountSel=null,lastQR=null;
+
+function uid(){return "a"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function fmt(n){return new Intl.NumberFormat("vi-VN").format(n)+"đ"}
+function bankName(bin){for(var i=0;i<BANKS.length;i++)if(BANKS[i][1]===bin)return BANKS[i][0];return bin}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("show")},2200)}
+function setMsg(id,t,ok){var e=$(id);e.textContent=t||"";e.className="msg"+(ok?" ok":"")}
+
+/* ---------- storage ---------- */
+function load(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(raw){var d=JSON.parse(raw);if(d&&Array.isArray(d.accounts))S=Object.assign(S,clean(d))}
+  }catch(e){}
+  if(!S.theme)S.theme=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast("Không lưu được dữ liệu trên trình duyệt này")}}
+function clean(d){
+  var seen={},acc=[];
+  (d.accounts||[]).forEach(function(a){
+    if(!a||typeof a!=="object")return;
+    var bin=String(a.bin||""),num=String(a.number||"").replace(/\D/g,""),name=String(a.name||"").trim().slice(0,60);
+    if(!/^\d{6}$/.test(bin)||num.length<6||num.length>19||!name)return;
+    var id=String(a.id||uid());if(seen[id])id=uid();seen[id]=1;
+    acc.push({id:id,bin:bin,number:num,name:name,isDefault:!!a.isDefault});
+  });
+  var def=null;acc.forEach(function(a){if(a.isDefault){if(def)a.isDefault=false;else def=a}});
+  return {accounts:acc,selectedId:d.selectedId||null,theme:d.theme==="dark"||d.theme==="light"?d.theme:null,note:String(d.note||"").slice(0,50)};
+}
+
+/* ---------- theme ---------- */
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme",S.theme);
+  $("themeBtn").textContent=S.theme==="dark"?"☀️":"🌙";
+  var m=document.querySelector('meta[name=theme-color]');if(m)m.content=S.theme==="dark"?"#09131f":"#1b5fe0";
+}
+
+/* ---------- amount ---------- */
+function parseAmount(){
+  var d=$("amount").value.replace(/\D/g,"");
+  if(!d)return 0;
+  var n=parseInt(d,10);
+  if(!isFinite(n)||n<=0)return 0;
+  return n<10000?n*1000:n;
+}
+var MAXAMT=9999999999;
+function renderTags(){
+  var base=parseAmount(),box=$("tags");box.textContent="";
+  var vals=[base,base*10,base*100];
+  if(!base){amountSel=null}
+  else if(amountSel&&vals.indexOf(amountSel)<0)amountSel=null;
+  vals.forEach(function(v){
+    var b=document.createElement("button");b.type="button";b.className="tag";
+    b.textContent=base?fmt(v):"—";
+    b.disabled=!base||v>MAXAMT;
+    b.setAttribute("aria-pressed",String(base&&v===amountSel));
+    b.addEventListener("click",function(){amountSel=v;setMsg("msg","");renderTags()});
+    box.appendChild(b);
+  });
+  var r=$("real");r.textContent="";
+  if(amountSel){var s=document.createElement("b");s.textContent=fmt(amountSel);r.append("Đã chọn: ",s)}
+  else r.textContent=base?"Chọn một mức tiền bên dưới":"Nhập 25 → 25.000đ · nhập 10000 → 10.000đ";
+}
+
+/* ---------- accounts UI ---------- */
+function getAcc(id){for(var i=0;i<S.accounts.length;i++)if(S.accounts[i].id===id)return S.accounts[i];return null}
+function ensureSelected(){
+  if(!getAcc(S.selectedId)){
+    var d=S.accounts.filter(function(a){return a.isDefault})[0]||S.accounts[0];
+    S.selectedId=d?d.id:null;
+  }
+}
+function renderSelect(){
+  var sel=$("accSel");sel.textContent="";
+  if(!S.accounts.length){var o=document.createElement("option");o.textContent="Chưa có tài khoản — thêm ở bên dưới";o.value="";sel.appendChild(o);sel.disabled=true;return}
+  sel.disabled=false;
+  S.accounts.forEach(function(a){
+    var o=document.createElement("option");o.value=a.id;
+    o.textContent=bankName(a.bin)+" · "+a.number+" · "+a.name+(a.isDefault?" ★":"");
+    if(a.id===S.selectedId)o.selected=true;sel.appendChild(o);
+  });
+}
+function renderList(){
+  var box=$("accList");box.textContent="";
+  if(!S.accounts.length){var e=document.createElement("div");e.className="empty";e.textContent="Chưa có tài khoản nào. Thêm tài khoản đầu tiên bằng biểu mẫu bên dưới.";box.appendChild(e);return}
+  S.accounts.forEach(function(a){
+    var row=document.createElement("div");row.className="acc";
+    var t=document.createElement("div");t.className="t";
+    var n=document.createElement("div");n.className="n";n.textContent=bankName(a.bin);
+    if(a.isDefault){var bd=document.createElement("span");bd.className="badge";bd.textContent="Mặc định";n.appendChild(bd)}
+    var s=document.createElement("div");s.className="s";s.textContent=a.number+" · "+a.name;
+    t.append(n,s);
+    var acts=document.createElement("div");acts.className="acts";
+    function btn(txt,cls,fn){var b=document.createElement("button");b.type="button";b.textContent=txt;if(cls)b.className=cls;b.addEventListener("click",fn);acts.appendChild(b)}
+    if(!a.isDefault)btn("Đặt mặc định","",function(){setDefault(a.id)});
+    btn("Sửa","",function(){editAcc(a.id)});
+    btn("Xóa","d",function(){delAcc(a.id)});
+    row.append(t,acts);box.appendChild(row);
+  });
+}
+function renderAll(){ensureSelected();renderSelect();renderList()}
+function setDefault(id){S.accounts.forEach(function(a){a.isDefault=a.id===id});S.selectedId=id;save();renderAll();toast("Đã đặt làm mặc định")}
+function delAcc(id){
+  var a=getAcc(id);if(!a)return;
+  if(!confirm("Xóa tài khoản "+bankName(a.bin)+" – "+a.number+"?"))return;
+  var wasDef=a.isDefault;
+  S.accounts=S.accounts.filter(function(x){return x.id!==id});
+  if(wasDef&&S.accounts.length)S.accounts[0].isDefault=true;
+  if(S.selectedId===id)S.selectedId=null;
+  if($("fId").value===id)resetForm();
+  save();renderAll();toast("Đã xóa tài khoản");
+}
+function editAcc(id){
+  var a=getAcc(id);if(!a)return;
+  $("fId").value=a.id;$("fBank").value=a.bin;$("fNum").value=a.number;$("fName").value=a.name;$("fDef").checked=a.isDefault;
+  $("fSave").textContent="Lưu thay đổi";$("fCancel").style.display="";setMsg("fMsg","");
+  $("accForm").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function resetForm(){
+  $("accForm").reset();$("fId").value="";$("fSave").textContent="Thêm tài khoản";$("fCancel").style.display="none";setMsg("fMsg","");
+}
+function submitForm(ev){
+  ev.preventDefault();
+  var bin=$("fBank").value,num=$("fNum").value.replace(/\D/g,""),name=$("fName").value.trim().replace(/\s+/g," ");
+  if(!/^\d{6}$/.test(bin))return setMsg("fMsg","Hãy chọn ngân hàng.");
+  if(num.length<6||num.length>19)return setMsg("fMsg","Số tài khoản phải gồm 6–19 chữ số.");
+  if(!name)return setMsg("fMsg","Hãy nhập tên chủ tài khoản.");
+  var id=$("fId").value,a=id?getAcc(id):null,makeDef=$("fDef").checked||!S.accounts.length;
+  if(a){a.bin=bin;a.number=num;a.name=name}
+  else{a={id:uid(),bin:bin,number:num,name:name,isDefault:false};S.accounts.push(a)}
+  if(makeDef){S.accounts.forEach(function(x){x.isDefault=false});a.isDefault=true}
+  else if(!S.accounts.some(function(x){return x.isDefault}))a.isDefault=true;
+  if(!id||makeDef)S.selectedId=a.id;
+  save();resetForm();renderAll();toast(id?"Đã cập nhật tài khoản":"Đã thêm tài khoản");
+}
+
+/* ---------- QR ---------- */
+function buildUrl(a,amount,note){
+  var u="https://img.vietqr.io/image/"+encodeURIComponent(a.bin)+"-"+encodeURIComponent(a.number)+"-compact2.png?amount="+encodeURIComponent(String(amount));
+  if(note)u+="&addInfo="+encodeURIComponent(note);
+  u+="&accountName="+encodeURIComponent(a.name);
+  return u;
+}
+function genQR(){
+  setMsg("msg","");
+  var a=getAcc(S.selectedId);
+  if(!S.accounts.length||!a)return setMsg("msg","Chưa có tài khoản nhận tiền. Hãy thêm tài khoản ở mục Quản lý tài khoản.");
+  if(!parseAmount())return setMsg("msg","Hãy nhập số tiền hợp lệ.");
+  if(!amountSel)return setMsg("msg","Hãy chọn một mức tiền trong 3 gợi ý.");
+  if(amountSel<1||amountSel>MAXAMT)return setMsg("msg","Số tiền vượt giới hạn cho phép.");
+  if(!navigator.onLine)return setMsg("msg","Không có kết nối mạng. Hãy kiểm tra internet rồi thử lại.");
+  var note=$("note").value.trim().replace(/\s+/g," ").slice(0,50);
+  S.note=note;save();
+  var url=buildUrl(a,amountSel,note),img=$("qrimg"),btn=$("goBtn");
+  btn.disabled=true;btn.textContent="Đang tạo QR…";
+  img.onload=function(){
+    btn.disabled=false;btn.textContent="TẠO QR";
+    lastQR={url:url,amount:amountSel,acc:a,note:note};
+    $("rAmt").textContent=fmt(amountSel);
+    $("rBank").textContent="";$("rBank").append("Ngân hàng: ",bold(bankName(a.bin)));
+    $("rNum").textContent="";$("rNum").append("Số tài khoản: ",bold(a.number));
+    $("rName").textContent="";$("rName").append("Chủ tài khoản: ",bold(a.name));
+    $("rNote").textContent="";if(note)$("rNote").append("Nội dung: ",bold(note));
+    $("mainCard").style.display="none";$("result").classList.add("show");
+    $("shBtn").style.display=(navigator.share&&navigator.canShare)?"":"none";
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+  img.onerror=function(){
+    btn.disabled=false;btn.textContent="TẠO QR";
+    setMsg("msg","Không tạo được QR. Kiểm tra mạng hoặc thông tin tài khoản rồi thử lại.");
+  };
+  img.src=url;
+}
+function bold(t){var b=document.createElement("b");b.textContent=t;return b}
+function newQR(){
+  $("result").classList.remove("show");$("mainCard").style.display="";
+  $("amount").value="";amountSel=null;renderTags();$("amount").focus();
+}
+function fileName(){return "vietqr-"+(lastQR?lastQR.acc.number+"-"+lastQR.amount:"")+".png"}
+function getBlob(){
+  return fetch(lastQR.url,{mode:"cors"}).then(function(r){if(!r.ok)throw new Error("http");return r.blob()});
+}
+function download(){
+  if(!lastQR)return;
+  getBlob().then(function(b){
+    var u=URL.createObjectURL(b),a=document.createElement("a");
+    a.href=u;a.download=fileName();document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(u)},2000);toast("Đã tải ảnh QR");
+  }).catch(function(){window.open(lastQR.url,"_blank","noopener");toast("Mở ảnh ở tab mới — hãy nhấn giữ để lưu")});
+}
+function share(){
+  if(!lastQR)return;
+  getBlob().then(function(b){
+    var f=new File([b],fileName(),{type:b.type||"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[f]}))return navigator.share({files:[f],title:"Mã QR chuyển khoản"});
+    return navigator.share({title:"Mã QR chuyển khoản",url:lastQR.url});
+  }).catch(function(e){if(e&&e.name==="AbortError")return;toast("Trình duyệt không chia sẻ được ảnh này")});
+}
+
+/* ---------- backup ---------- */
+function exportData(){
+  var blob=new Blob([JSON.stringify({app:"vietqr",version:1,exportedAt:new Date().toISOString(),data:S},null,2)],{type:"application/json"});
+  var u=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=u;a.download="vietqr-backup-"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(u)},2000);setMsg("bMsg","Đã xuất file sao lưu.",true);
+}
+function importData(file){
+  if(!file)return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var j=JSON.parse(rd.result),d=j&&j.data?j.data:j;
+      if(!d||!Array.isArray(d.accounts))throw 0;
+      var c=clean(d);
+      if(!c.accounts.length&&d.accounts.length)throw 0;
+      if(!confirm("Khôi phục sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại bằng "+c.accounts.length+" tài khoản trong file. Tiếp tục?"))return;
+      S=Object.assign(S,c);if(!S.theme)S.theme="light";
+      ensureSelected();save();applyTheme();renderAll();$("note").value=S.note;setMsg("bMsg","Đã khôi phục dữ liệu.",true);
+    }catch(e){setMsg("bMsg","File không hợp lệ. Hãy chọn file JSON được xuất từ trang này.")}
+    $("imFile").value="";
+  };
+  rd.onerror=function(){setMsg("bMsg","Không đọc được file.")};
+  rd.readAsText(file);
+}
+
+/* ---------- init ---------- */
+function init(){
+  load();
+  var fb=$("fBank"),ph=document.createElement("option");ph.value="";ph.textContent="Chọn ngân hàng…";fb.appendChild(ph);
+  BANKS.forEach(function(b){var o=document.createElement("option");o.value=b[1];o.textContent=b[0];fb.appendChild(o)});
+  applyTheme();renderAll();renderTags();$("note").value=S.note||"";
+  $("themeBtn").addEventListener("click",function(){S.theme=S.theme==="dark"?"light":"dark";applyTheme();save()});
+  $("accSel").addEventListener("change",function(){S.selectedId=this.value;save()});
+  $("amount").addEventListener("input",function(){
+    var d=this.value.replace(/\D/g,"").replace(/^0+/,"").slice(0,10);
+    this.value=d?new Intl.NumberFormat("vi-VN").format(parseInt(d,10)):"";
+    setMsg("msg","");renderTags();
+  });
+  $("amount").addEventListener("keydown",function(e){if(e.key==="Enter")e.preventDefault()});
+  $("note").addEventListener("input",function(){S.note=this.value.slice(0,50);save()});
+  $("goBtn").addEventListener("click",genQR);
+  $("newBtn").addEventListener("click",newQR);
+  $("dlBtn").addEventListener("click",download);
+  $("shBtn").addEventListener("click",share);
+  $("accForm").addEventListener("submit",submitForm);
+  $("fCancel").addEventListener("click",resetForm);
+  $("fName").addEventListener("input",function(){this.value=this.value.toUpperCase()});
+  $("exBtn").addEventListener("click",exportData);
+  $("imBtn").addEventListener("click",function(){$("imFile").click()});
+  $("imFile").addEventListener("change",function(){importData(this.files[0])});
+}
+init();
+})();
+</script>
+</body>
+</html>
