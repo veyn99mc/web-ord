@@ -62,7 +62,7 @@ function render(){
 const cats=['Tất cả',...categories];if(!cats.includes(activeCategory))activeCategory='Tất cả';
 $('filters').innerHTML=cats.map(c=>`<button class="chip ${c===activeCategory?'active':''}" data-cat="${esc(c)}">${esc(c)}${c==='Tất cả'?'':` · ${products.filter(p=>p.category===c).length}`}</button>`).join('');
 const q=$('search').value.trim().toLocaleLowerCase('vi');
-const shown=products.filter(p=>(activeCategory==='Tất cả'||p.category===activeCategory)&&[p.name,p.category,p.unit,p.note].some(v=>String(v||'').toLocaleLowerCase('vi').includes(q)));
+let shown=products.filter(p=>(activeCategory==='Tất cả'||p.category===activeCategory)&&[p.name,p.category,p.unit,p.note].some(v=>String(v||'').toLocaleLowerCase('vi').includes(q)));shown=shown.slice().sort((a,b)=>{const ia=cats.indexOf(a.category),ib=cats.indexOf(b.category);return (ia<0?999:ia)-(ib<0?999:ib)});
 $('count').textContent=`${shown.length} / ${products.length} sản phẩm`;
 $('list').innerHTML=shown.length?shown.map(p=>`<article class="item"><div class="item-main"><div class="name">${esc(p.name)}</div><div class="meta"><span class="tag">${esc(p.category)}</span>${p.unit?`<span>${esc(p.unit)}</span>`:''}${p.note?`<span>· ${esc(p.note)}</span>`:''}</div></div><div class="price">${money(p.price)}${p.unit?`<div class="unit">/${esc(p.unit)}</div>`:''}</div><button class="edit" data-manage="${p.id}">Sửa</button></article>`).join(''):'<div class="empty">Chưa có sản phẩm phù hợp.<br>Thử từ khóa khác hoặc thêm sản phẩm mới nhé.</div>';
 renderCatSelect();renderCatManager();
