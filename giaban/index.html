@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fff"><title>Sổ giá sản phẩm</title>
+<style>
+:root{--ink:#263238;--muted:#7b8790;--line:#e9edf0;--blue:#eaf3ff;--blue2:#3478d4;--red:#fff0ef;--shadow:0 8px 24px rgba(31,51,73,.06)}
+*{box-sizing:border-box}body{margin:0;background:#f7f9fb;color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:900px;margin:auto;padding:22px 16px 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
+h1{font-size:24px;margin:0 0 3px;letter-spacing:-.5px}.sub{color:var(--muted);font-size:13px}
+button,input,select,textarea{font:inherit}button{border:0;cursor:pointer;border-radius:12px;padding:10px 13px;font-weight:650}
+.primary{background:var(--blue2);color:white}.soft{background:var(--blue);color:#2865ad}.danger{background:var(--red);color:#c44d48}.neutral{background:#f0f2f4;color:#53616b}
+.top-actions{display:flex;gap:7px}.toolbar{display:flex;gap:10px;margin-bottom:12px}.search{flex:1;position:relative}.search input{width:100%;padding:13px 14px 13px 42px;border:1px solid var(--line);border-radius:14px;background:white;outline:none}.search:before{content:"⌕";position:absolute;left:15px;top:7px;font-size:24px;color:#8b98a2}
+.filters{display:flex;gap:8px;overflow:auto;padding:2px 0 12px;scrollbar-width:none}.chip{white-space:nowrap;padding:8px 13px;border-radius:30px;background:white;color:#66737d;border:1px solid var(--line);font-size:13px}.chip.active{background:#eaf3ff;color:#2865ad;border-color:#d7e8ff}
+.summary{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;margin:4px 2px 10px}
+.list{display:grid;gap:9px}.item{background:white;border:1px solid var(--line);border-radius:16px;padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.item-main{min-width:0;flex:1}.name{font-weight:700;font-size:15px;overflow-wrap:anywhere}.meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:5px;color:var(--muted);font-size:12px}.tag{background:#f1f5f8;border-radius:20px;padding:3px 8px;color:#61717d}.price{font-size:17px;font-weight:750;white-space:nowrap;color:#245f9f;text-align:right}.unit{font-size:11px;color:var(--muted);font-weight:500}.manage{padding:8px 11px;background:#f1f5f8;color:#566671;font-size:12px;white-space:nowrap}
+.empty{background:white;border:1px dashed #d9e1e7;border-radius:16px;padding:34px 18px;text-align:center;color:var(--muted)}
+.backdrop{display:none;position:fixed;inset:0;background:#18232e66;z-index:5;align-items:flex-end;justify-content:center;padding:14px}.backdrop.show{display:flex}.modal{width:100%;max-width:500px;background:white;border-radius:22px;padding:20px;box-shadow:0 20px 60px #14253633;max-height:90vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.modal h2{font-size:19px;margin:0}.x{background:#f2f4f6;color:#66737d;padding:7px 11px}
+.field{margin-bottom:13px}.field label{display:block;font-size:13px;font-weight:650;margin-bottom:6px;color:#53616b}.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid #dfe5e9;border-radius:11px;outline:none;background:#fff}.field input:focus,.field select:focus,.field textarea:focus{border-color:#83b4ee;box-shadow:0 0 0 3px #eaf3ff}
+.category-line{display:flex;gap:8px}.category-line select{flex:1;min-width:0}.category-line button{white-space:nowrap;padding:9px 12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.actions button{flex:1}.hidden{display:none!important}
+.cat-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}.cat-name{flex:1;font-weight:600}.move{background:#f1f5f8;color:#53616b;padding:7px 10px}.small-danger{background:var(--red);color:#c44d48;padding:7px 10px;font-size:12px}.foot{font-size:11px;color:#98a2aa;text-align:center;margin-top:22px}
+@media(min-width:600px){.backdrop{align-items:center}.wrap{padding-top:30px}.item{padding:15px 18px}}
+@media(max-width:420px){h1{font-size:21px}.top-actions button{padding:9px 10px;font-size:12px}.item{gap:8px;padding:12px}.price{font-size:15px}.manage{padding:8px 9px}}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div><h1>📒 Sổ giá sản phẩm</h1><div class="sub">Lưu nhanh và tra cứu giá rượu bia, hàng hóa</div></div><div class="top-actions"><button class="soft" id="catsBtn">Danh mục</button><button class="primary" id="addBtn">＋ Thêm</button></div></header>
+<div class="toolbar"><div class="search"><input id="search" type="search" placeholder="Tìm tên sản phẩm, danh mục..." autocomplete="off"></div></div>
+<div class="filters" id="filters"></div><div class="summary"><span id="count">0 sản phẩm</span><span>Giá lưu trên thiết bị này</span></div><main class="list" id="list"></main>
+<div class="foot">Dữ liệu tự lưu trên trình duyệt · Nên sao lưu dữ liệu định kỳ</div></div>
+
+<div class="backdrop" id="backdrop"><section class="modal" role="dialog" aria-modal="true">
+<div class="modal-head"><h2 id="modalTitle">Thêm sản phẩm</h2><button class="x" id="closeBtn">✕</button></div>
+<form id="productForm">
+<div class="field"><label for="pname">Tên sản phẩm *</label><input id="pname" required maxlength="80" placeholder="VD: Bia Tiger bạc"></div>
+<div class="field"><label for="pcat">Danh mục *</label><div class="category-line"><select id="pcat" required></select><button class="soft" type="button" id="addCatInline">＋ Tạo mục</button></div></div>
+<div class="two"><div class="field"><label for="punit">Đơn vị</label><input id="punit" maxlength="20" placeholder="lon, chai, thùng..."></div><div class="field"><label for="pprice">Giá (VNĐ) *</label><input id="pprice" type="number" min="0" step="1" required inputmode="numeric" placeholder="VD: 18000"></div></div>
+<div class="field"><label for="pnote">Ghi chú</label><textarea id="pnote" rows="2" maxlength="180" placeholder="VD: Thùng 24 lon, giá nhập..."></textarea></div>
+<div class="actions"><button class="primary" type="submit" id="saveBtn">Lưu sản phẩm</button><button class="danger hidden" type="button" id="deleteBtn">Xóa sản phẩm</button></div></form></section></div>
+
+<div class="backdrop" id="catBackdrop"><section class="modal" role="dialog" aria-modal="true">
+<div class="modal-head"><h2>Sắp xếp danh mục</h2><button class="x" id="closeCats">✕</button></div>
+<p style="font-size:13px;color:#7b8790;margin-top:-5px">Dùng mũi tên để đổi thứ tự hiển thị. Danh mục đang có sản phẩm không thể xóa.</p>
+<div class="field"><label for="newCat">Tạo danh mục mới</label><div class="category-line"><input id="newCat" maxlength="40" placeholder="VD: Bia, Rượu mạnh..."><button class="primary" id="createCat" type="button">Thêm</button></div></div>
+<div id="catList"></div></section></div>
+
+<script>
+(()=>{
+const KEY='so-gia-san-pham-v1',CATKEY='so-gia-danh-muc-v1';
+const defaults=[{id:1,name:'Tiger bạc',category:'Bia',unit:'lon',price:18000,note:''},{id:2,name:'Heineken',category:'Bia',unit:'lon',price:20000,note:''},{id:3,name:'Coca-Cola',category:'Nước ngọt',unit:'lon',price:12000,note:''},{id:4,name:'Vodka',category:'Rượu',unit:'chai',price:95000,note:''}];
+const $=id=>document.getElementById(id);let products=[],categories=[],activeCategory='Tất cả',editingId=null;
+try{products=JSON.parse(localStorage.getItem(KEY)||'null')||defaults}catch(e){products=defaults}
+try{categories=JSON.parse(localStorage.getItem(CATKEY)||'null')||[]}catch(e){categories=[]}
+const save=()=>{localStorage.setItem(KEY,JSON.stringify(products));localStorage.setItem(CATKEY,JSON.stringify(categories))};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>Number(n||0).toLocaleString('vi-VN')+' ₫';
+function syncCategories(){const used=products.map(p=>p.category).filter(Boolean);for(const c of used)if(!categories.includes(c))categories.push(c);categories=categories.filter((c,i,a)=>a.indexOf(c)===i);save()}
+syncCategories();
+function render(){
+const cats=['Tất cả',...categories];if(!cats.includes(activeCategory))activeCategory='Tất cả';
+$('filters').innerHTML=cats.map(c=>`<button class="chip ${c===activeCategory?'active':''}" data-cat="${esc(c)}">${esc(c)}${c==='Tất cả'?'':` · ${products.filter(p=>p.category===c).length}`}</button>`).join('');
+const q=$('search').value.trim().toLocaleLowerCase('vi');
+const shown=products.filter(p=>(activeCategory==='Tất cả'||p.category===activeCategory)&&[p.name,p.category,p.unit,p.note].some(v=>String(v||'').toLocaleLowerCase('vi').includes(q)));
+$('count').textContent=`${shown.length} / ${products.length} sản phẩm`;
+$('list').innerHTML=shown.length?shown.map(p=>`<article class="item"><div class="item-main"><div class="name">${esc(p.name)}</div><div class="meta"><span class="tag">${esc(p.category)}</span>${p.unit?`<span>${esc(p.unit)}</span>`:''}${p.note?`<span>· ${esc(p.note)}</span>`:''}</div></div><div class="price">${money(p.price)}${p.unit?`<div class="unit">/${esc(p.unit)}</div>`:''}</div><button class="manage" data-manage="${p.id}">Quản lý</button></article>`).join(''):'<div class="empty">Chưa có sản phẩm phù hợp.<br>Thử từ khóa khác hoặc thêm sản phẩm mới nhé.</div>';
+renderCatSelect();renderCatManager();
+}
+function renderCatSelect(selected=''){const opts=categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('pcat').innerHTML=opts||'<option value="">Chưa có danh mục</option>';if(selected&&categories.includes(selected))$('pcat').value=selected;else if(categories.length)$('pcat').value=categories[0];}
+function renderCatManager(){$('catList').innerHTML=categories.length?categories.map((c,i)=>`<div class="cat-row"><span class="cat-name">${esc(c)} <span style="color:#9aa4ac;font-size:12px;font-weight:400">(${products.filter(p=>p.category===c).length})</span></span><button class="move" data-up="${i}" ${i===0?'disabled':''}>↑</button><button class="move" data-down="${i}" ${i===categories.length-1?'disabled':''}>↓</button><button class="small-danger" data-delcat="${esc(c)}">Xóa</button></div>`).join(''):'<div class="empty">Chưa có danh mục. Hãy tạo mục đầu tiên.</div>';}
+function openModal(p=null,preferred=''){editingId=p?p.id:null;$('modalTitle').textContent=p?'Sửa sản phẩm':'Thêm sản phẩm';$('saveBtn').textContent=p?'Lưu thay đổi':'Lưu sản phẩm';$('deleteBtn').classList.toggle('hidden',!p);$('pname').value=p?.name||'';$('punit').value=p?.unit||'';$('pprice').value=p?.price??'';$('pnote').value=p?.note||'';renderCatSelect(p?.category||preferred||activeCategory);$('backdrop').classList.add('show');setTimeout(()=>$('pname').focus(),80);}
+function closeModal(){$('backdrop').classList.remove('show');editingId=null;}
+function addCategory(name){name=name.trim();if(!name)return false;if(categories.some(c=>c.toLocaleLowerCase('vi')===name.toLocaleLowerCase('vi'))){alert('Danh mục này đã tồn tại.');return false;}categories.push(name);save();render();return true;}
+$('addBtn').onclick=()=>openModal(null,activeCategory!=='Tất cả'?activeCategory:'');
+$('closeBtn').onclick=closeModal;$('backdrop').onclick=e=>{if(e.target===$('backdrop'))closeModal()};
+$('filters').onclick=e=>{const b=e.target.closest('[data-cat]');if(b){activeCategory=b.dataset.cat;render()}};
+$('list').onclick=e=>{const b=e.target.closest('[data-manage]');if(b){const p=products.find(x=>x.id===Number(b.dataset.manage));if(p)openModal(p)}};
+$('search').oninput=render;
+$('addCatInline').onclick=()=>{const name=prompt('Nhập tên danh mục mới:');if(addCategory(name||''))$('pcat').value=name.trim()};
+$('productForm').onsubmit=e=>{e.preventDefault();const item={id:editingId??Date.now(),name:$('pname').value.trim(),category:$('pcat').value,unit:$('punit').value.trim(),price:Number($('pprice').value),note:$('pnote').value.trim()};if(!item.name||!item.category||!Number.isFinite(item.price)||item.price<0)return;if(editingId!==null)products=products.map(p=>p.id===editingId?item:p);else products.unshift(item);save();activeCategory='Tất cả';closeModal();render()};
+$('deleteBtn').onclick=()=>{const p=products.find(x=>x.id===editingId);if(p&&confirm(`Xóa "${p.name}" khỏi danh sách?`)){products=products.filter(x=>x.id!==editingId);save();closeModal();render()}};
+$('catsBtn').onclick=()=>{$('catBackdrop').classList.add('show');renderCatManager()};$('closeCats').onclick=()=>$('catBackdrop').classList.remove('show');$('catBackdrop').onclick=e=>{if(e.target===$('catBackdrop'))$('catBackdrop').classList.remove('show')};
+$('createCat').onclick=()=>{const name=$('newCat').value;if(addCategory(name)){$('newCat').value='';$('pcat').value=name.trim()}};
+$('newCat').addEventListener('keydown',e=>{if(e.key==='Enter'){$('createCat').click()}});
+$('catList').onclick=e=>{const up=e.target.closest('[data-up]'),down=e.target.closest('[data-down]'),del=e.target.closest('[data-delcat]');if(up||down){const i=Number((up||down).dataset[up?'up':'down']),j=up?i-1:i+1;[categories[i],categories[j]]=[categories[j],categories[i]];save();render()}else if(del){const c=del.dataset.delcat;if(products.some(p=>p.category===c)){alert('Danh mục này vẫn còn sản phẩm. Hãy chuyển hoặc xóa sản phẩm trước.');return}if(confirm(`Xóa danh mục "${c}"?`)){categories=categories.filter(x=>x!==c);if(activeCategory===c)activeCategory='Tất cả';save();render()}}};
+render();
+})();
+</script></body></html>
