@@ -228,6 +228,7 @@ footer b{color:var(--ink)}
     <div class="status" id="searchStatus"></div>
     <div class="results" id="results"></div>
     <div id="onlineResults"></div>
+    <div id="cpsResults"></div>
   </div>
 </section>
 
@@ -281,7 +282,7 @@ footer b{color:var(--ink)}
 
 <footer>
   <p><b>PhoneTop</b> — trang tổng hợp cá nhân, không phải trang của hãng hay tổ chức nào.</p>
-  <p>Nguồn dữ liệu: Counterpoint Research (thị phần Q3/2026) · NanoReview (AnTuTu 11, Geekbench 6) · AnTuTu (xếp hạng V12, 10/2026) · GSMArena (thông số máy có sẵn) · MobileCity (tìm kiếm online: giá + thông số).<br>Điểm benchmark thay đổi theo máy đo và phiên bản phần mềm — chỉ nên dùng để tham khảo tương đối. Cập nhật: 20/11/2026.</p>
+  <p>Nguồn dữ liệu: Counterpoint Research (thị phần Q3/2026) · NanoReview (AnTuTu 11, Geekbench 6) · AnTuTu (xếp hạng V12, 10/2026) · GSMArena (thông số máy có sẵn) · MobileCity + CellphoneS (tìm kiếm online: giá + thông số).<br>Điểm benchmark thay đổi theo máy đo và phiên bản phần mềm — chỉ nên dùng để tham khảo tương đối. Cập nhật: 20/11/2026.</p>
 </footer>
 
 </div>
@@ -427,6 +428,7 @@ function doSearch(){
   statusEl.style.display = 'block';
   if(!items.length){
     searchOnline(q);
+    searchCps(q);
     statusEl.textContent = 'Chưa có “' + q + '” trong kho dữ liệu hiện tại (' + PHONES.length + ' máy). Thử gõ ngắn hơn, ví dụ chỉ tên hãng hoặc dòng máy.';
     return;
   }
@@ -444,6 +446,7 @@ function doSearch(){
     resultsEl.appendChild(card);
   });
   searchOnline(q);
+  searchCps(q);
 }
 document.getElementById('searchBtn').addEventListener('click', doSearch);
 qInput.addEventListener('keydown', e => { if(e.key === 'Enter') doSearch(); });
@@ -480,6 +483,35 @@ async function searchOnline(q){
     onlineEl.innerHTML = '<div class="status" style="display:block">🌐 Chưa kết nối được nguồn online lúc này — bạn thử lại sau ít phút nhé.</div>';
   }
 }
+const cpsEl = document.getElementById('cpsResults');
+async function searchCps(q){
+  cpsEl.innerHTML = '<div class="status" style="display:block">⏳ Đang tìm thêm trên CellphoneS (online)…</div>';
+  try{
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 45000);
+    const res = await fetch(BRIDGE + '/cps-search?q=' + encodeURIComponent(q), { signal: ctrl.signal });
+    clearTimeout(timer);
+    const data = await res.json();
+    if(!data.results || !data.results.length){
+      cpsEl.innerHTML = '<div class="status" style="display:block">🌐 CellphoneS cũng không có kết quả cho “' + esc(q) + '”.</div>';
+      return;
+    }
+    let html = '<div class="online-head">🌐 Kết quả online từ CellphoneS — ấn vào máy để xem thông số:</div>';
+    data.results.forEach(p => {
+      html += '<div class="result ocard">' +
+        '<div class="orow" data-url="' + esc(p.url) + '" data-specs="cps-specs">' +
+        (p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy" onerror="this.remove()">' : '<div class="noimg">📱</div>') +
+        '<div class="oinfo"><div class="src">CellphoneS</div><h4>' + esc(p.name) + '</h4>' +
+        (p.price ? '<div class="oprice">' + esc(p.price) + '</div>' : '') + '</div>' +
+        '<span class="chev">▾</span></div>' +
+        '<div class="specbox" style="display:none"></div></div>';
+    });
+    cpsEl.innerHTML = html;
+    cpsEl.querySelectorAll('.orow').forEach(row => row.addEventListener('click', () => toggleSpecs(row)));
+  }catch(e){
+    cpsEl.innerHTML = '<div class="status" style="display:block">🌐 Chưa kết nối được CellphoneS lúc này — bạn thử lại sau ít phút nhé.</div>';
+  }
+}
 async function toggleSpecs(row){
   const card = row.parentElement;
   const box = card.querySelector('.specbox');
@@ -488,7 +520,7 @@ async function toggleSpecs(row){
   box.innerHTML = '<div class="status" style="display:block">⏳ Đang tải thông số…</div>';
   box.style.display = 'block'; card.classList.add('open');
   try{
-    const res = await fetch(BRIDGE + '/specs?url=' + encodeURIComponent(row.dataset.url));
+    const res = await fetch(BRIDGE + '/' + (row.dataset.specs || 'specs') + '?url=' + encodeURIComponent(row.dataset.url));
     const data = await res.json();
     if(!data.specs || !data.specs.length) throw new Error('empty');
     box.innerHTML = '<table class="spectable">' + data.specs.map(r => '<tr><td>' + esc(r.label) + '</td><td>' + esc(r.value) + '</td></tr>').join('') + '</table>';
