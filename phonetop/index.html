@@ -18,7 +18,7 @@
   --radius:20px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth; overflow-x:clip}
 body{
   font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
   background:var(--bg); color:var(--ink); line-height:1.55;
@@ -47,12 +47,17 @@ nav{position:sticky; top:10px; z-index:50; margin-top:10px;
 .logo{font-family:"Space Grotesk","Be Vietnam Pro",sans-serif; font-weight:700; font-size:19px; letter-spacing:.2px; display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink)}
 .logo .mark{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;font-size:17px;box-shadow:0 6px 16px rgba(80,80,220,.35)}
 .logo em{font-style:normal; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
-.navlinks{display:flex; gap:4px}
-.navlinks a{color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:600; padding:7px 11px; border-radius:10px}
+.navlinks{display:flex; gap:4px; flex:1; justify-content:flex-end}
+.navlinks a{color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:600; padding:7px 11px; border-radius:10px; text-align:center; white-space:nowrap}
 .navlinks a:hover{background:rgba(90,110,220,.10); color:var(--ink)}
-@media(max-width:560px){ .navlinks a{padding:7px 8px; font-size:12.5px} .logo{font-size:17px} }
+@media(max-width:640px){
+  nav{flex-wrap:wrap; justify-content:center; padding:10px}
+  .logo{font-size:17px}
+  .navlinks{flex:1 1 100%; justify-content:space-between; margin-top:6px}
+  .navlinks a{flex:1; padding:8px 2px; font-size:12.5px}
+}
 /* Hero */
-.hero{text-align:center; padding:52px 6px 10px}
+.hero{text-align:center; padding:32px 6px 4px}
 .badge{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:700; color:#3730a3;
   background:rgba(255,255,255,.8); border:1px solid var(--line); padding:6px 13px; border-radius:999px; box-shadow:var(--shadow)}
 .badge .pulse{width:8px;height:8px;border-radius:50%;background:#22c55e; box-shadow:0 0 0 0 rgba(34,197,94,.5); animation:pulse 1.8s infinite}
@@ -61,12 +66,12 @@ nav{position:sticky; top:10px; z-index:50; margin-top:10px;
 .hero h1 .grad{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
 .hero p{color:var(--muted); font-size:clamp(14.5px,2.6vw,17px); max-width:640px; margin:0 auto}
 .herostats{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:26px}
-.hstat{background:var(--card); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.9); border-radius:16px; padding:12px 18px; box-shadow:var(--shadow); min-width:170px}
+.hstat{background:var(--card); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.9); border-radius:16px; padding:12px 14px; box-shadow:var(--shadow); flex:1 1 150px; min-width:0; max-width:260px}
 .hstat .k{font-size:11px; font-weight:700; letter-spacing:1.2px; color:var(--muted); text-transform:uppercase}
 .hstat .v{font-family:"Space Grotesk",sans-serif; font-size:19px; font-weight:700; margin-top:2px}
 .hstat .v small{font-size:12.5px; color:var(--muted); font-weight:600}
 /* Sections */
-section{margin-top:52px; scroll-margin-top:92px}
+section{margin-top:42px; scroll-margin-top:92px}
 .sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:6px}
 .sec-head h2{font-family:"Space Grotesk","Be Vietnam Pro",sans-serif; font-size:clamp(23px,4.6vw,31px); font-weight:700; letter-spacing:-.3px}
 .sec-head h2 .grad{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
@@ -98,6 +103,7 @@ section{margin-top:52px; scroll-margin-top:92px}
 .chip h3{font-size:16.5px; font-weight:800; display:flex; flex-wrap:wrap; gap:8px; align-items:center}
 .chip h3 .maker{font-size:11.5px; font-weight:700; color:#fff; background:linear-gradient(92deg,#0891b2,#7c3aed); padding:3px 9px; border-radius:999px}
 .chip .phone{font-size:13px; color:var(--muted); margin-top:2px}
+.chip .phone b{color:var(--ink); font-weight:700}
 .scores{display:grid; grid-template-columns:1fr auto auto; gap:6px 16px; align-items:center; margin-top:11px}
 @media(max-width:560px){ .scores{grid-template-columns:1fr auto} .scores .gb2{display:none} }
 .scores .lab{font-size:11px; font-weight:700; letter-spacing:.8px; color:var(--muted); text-transform:uppercase}
@@ -143,10 +149,25 @@ section{margin-top:52px; scroll-margin-top:92px}
 .extlinks a{font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; background:rgba(255,255,255,.85); border:1px solid var(--line); padding:8px 14px; border-radius:999px}
 .extlinks a:hover{border-color:#818cf8}
 .online-head{font-weight:800;font-size:14.5px;margin:18px 0 10px;color:var(--ink)}
-.specbtn{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:none;font:inherit;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer}
-.spectable{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.8px}
-.spectable td{padding:6px 8px;border-top:1px solid var(--border);vertical-align:top;color:var(--muted)}
-.spectable td:first-child{font-weight:700;color:var(--ink);white-space:nowrap;width:32%}
+#onlineResults{display:grid; gap:10px}
+.ocard{display:block; padding:0; overflow:hidden}
+.orow{display:flex; gap:11px; align-items:center; padding:11px 12px; cursor:pointer}
+.orow img{width:52px; height:52px; object-fit:cover; border-radius:11px; flex:none; background:#e8edfb}
+.orow .noimg{width:52px; height:52px; border-radius:11px; flex:none; display:grid; place-items:center; font-size:23px; background:linear-gradient(145deg,#e0e7ff,#fae8ff)}
+.oinfo{flex:1; min-width:0}
+.oinfo h4{font-size:14.5px; font-weight:800; line-height:1.3}
+.oprice{font-size:13.5px; font-weight:800; color:#c44d48; margin-top:1px}
+.chev{flex:none; font-size:13px; color:var(--muted); transition:transform .2s ease}
+.ocard.open .chev{transform:rotate(180deg)}
+.specbox{padding:0 12px}
+.specbox .status{padding-bottom:10px}
+.spectable{width:100%; border-collapse:collapse; margin-top:8px; font-size:12.8px; table-layout:fixed}
+.spectable td{padding:6px 8px; border-top:1px solid var(--line); vertical-align:top; color:var(--muted); word-break:break-word; overflow-wrap:anywhere}
+.spectable td:first-child{font-weight:700; color:var(--ink); width:34%}
+#toTop{position:fixed; right:16px; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:60; width:47px; height:47px; border-radius:50%; border:1px solid rgba(255,255,255,.9); background:var(--grad); color:#fff; font-size:20px; font-weight:800; cursor:pointer; box-shadow:0 12px 26px rgba(80,80,220,.4); opacity:0; visibility:hidden; transform:translateY(8px); transition:opacity .25s ease, transform .25s ease, visibility .25s}
+#toTop.show{opacity:1; visibility:visible; transform:none}
+#toTop:active{transform:scale(.94)}
+img{max-width:100%}
 .specgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:12.5px;color:var(--muted);margin-top:6px}.specgrid b{color:var(--ink);font-weight:700}
 footer{margin-top:58px; text-align:center; color:var(--muted); font-size:12.5px; line-height:1.7}
 footer b{color:var(--ink)}
@@ -161,10 +182,10 @@ footer b{color:var(--ink)}
 <nav>
   <a class="logo" href="#"><span class="mark">📱</span>Phone<em>Top</em></a>
   <div class="navlinks">
-    <a href="#hang">Hãng</a>
-    <a href="#chip">Top chip</a>
-    <a href="#may">Top máy</a>
     <a href="#timkiem">Tìm kiếm</a>
+    <a href="#may">Top máy</a>
+    <a href="#chip">Top chip</a>
+    <a href="#hang">Hãng</a>
   </div>
 </nav>
 
@@ -179,37 +200,9 @@ footer b{color:var(--ink)}
   </div>
 </header>
 
-<section id="hang">
-  <div class="sec-head"><h2>🏆 Top hãng điện thoại <span class="grad">thế giới</span></h2></div>
-  <p class="sec-sub">Thị phần toàn cầu quý 3/2026 theo Counterpoint Research. Các hãng ngoài top 5 không công bố thị phần riêng trong báo cáo này.</p>
-  <div class="brands" id="brandGrid"></div>
-</section>
-
-<section id="chip">
-  <div class="sec-head"><h2>⚡ Top chip di động <span class="grad">mạnh nhất hiện tại</span></h2></div>
-  <p class="sec-sub">Xếp hạng tổng hợp theo NanoReview — điểm AnTuTu 11 và Geekbench 6. Lưu ý: điểm AnTuTu giữa iOS và Android không so sánh trực tiếp 1-1 được, nên hãy nhìn cả Geekbench (đơn nhân / đa nhân).</p>
-  <div class="chiplist" id="chipList"></div>
-  <div class="notes">
-    <div class="note"><b>🔥 Xiaomi Xring O3 — ngựa ô của năm</b><p>Chip tự phát triển của Xiaomi đứng số 1 bảng AnTuTu V12 toàn cầu tháng 10/2026 (điểm trung bình 3.010.770), trang bị trên Xiaomi 18 Fold.</p></div>
-    <div class="note"><b>🧬 Kirin 9050 Pro — Huawei trở lại</b><p>Ra mắt 10/2026 trên Mate 90 Pro Max với kiến trúc “Tau” LogicFolding, mạnh hơn đời trước 31% theo Huawei — đánh dấu sự trở lại của Kirin ở phân khúc cao cấp nhất.</p></div>
-    <div class="note"><b>🤖 Tensor G6 — không chạy đua điểm số</b><p>Chip trên Google Pixel 11 (8/2026) tập trung vào AI và nhiếp ảnh điện toán thay vì benchmark thuần, nên không nằm trong top điểm số này.</p></div>
-  </div>
-</section>
-
-<section id="may">
-  <div class="sec-head"><h2>📱 Điện thoại mạnh nhất <span class="grad">tháng 10/2026</span></h2></div>
-  <p class="sec-sub">Bảng xếp hạng flagship Android của AnTuTu (bản V12, thị trường Trung Quốc) — điểm trung bình của hàng nghìn lượt đo thực tế.</p>
-  <div class="phones">
-    <div class="phone reveal"><div class="pos">HẠNG 1</div><h3>Honor Win 2</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.958.339 <small>điểm AnTuTu V12</small></div></div>
-    <div class="phone reveal"><div class="pos">HẠNG 2</div><h3>RedMagic 12 Pro+</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.956.846 <small>điểm AnTuTu V12</small></div></div>
-    <div class="phone reveal"><div class="pos">HẠNG 3</div><h3>iQOO 16</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.865.546 <small>điểm AnTuTu V12</small></div></div>
-    <div class="phone reveal"><div class="pos">HẠNG 4</div><h3>Xiaomi 18 Fold</h3><div class="pchip">Xiaomi Xring O3</div><div class="pscore">4.737.201 <small>điểm AnTuTu V12</small></div></div>
-  </div>
-</section>
-
 <section id="timkiem">
   <div class="sec-head"><h2>🔎 Tra cứu <span class="grad">thông số điện thoại</span></h2></div>
-  <p class="sec-sub">Gõ tên máy, tên hãng hoặc con chip: máy phổ biến hiện thông số ngay tại chỗ (gõ không dấu cũng ra), đồng thời web tìm thêm trực tiếp trên MobileCity — giá và thông số tiếng Việt hiển thị ngay tại đây, không cần bấm đi đâu khác.</p>
+  <p class="sec-sub">Gõ tên máy, tên hãng hoặc con chip (không dấu, gõ dính chữ cũng ra). Kết quả hiện gọn ngay tại đây — ấn vào từng máy để sổ bảng thông số tiếng Việt đầy đủ, kèm giá tham khảo từ MobileCity.</p>
   <div class="searchbox">
     <div class="searchrow">
       <input id="q" type="search" placeholder="Ví dụ: iPhone 18 Pro Max, Snapdragon 8 Elite Gen 6, Galaxy S26 Ultra…" autocomplete="off">
@@ -228,12 +221,41 @@ footer b{color:var(--ink)}
   </div>
 </section>
 
+<section id="may">
+  <div class="sec-head"><h2>📱 Điện thoại mạnh nhất <span class="grad">tháng 10/2026</span></h2></div>
+  <p class="sec-sub">Bảng xếp hạng flagship Android của AnTuTu (bản V12, thị trường Trung Quốc) — điểm trung bình của hàng nghìn lượt đo thực tế.</p>
+  <div class="phones">
+    <div class="phone reveal"><div class="pos">HẠNG 1</div><h3>Honor Win 2</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.958.339 <small>điểm AnTuTu V12</small></div></div>
+    <div class="phone reveal"><div class="pos">HẠNG 2</div><h3>RedMagic 12 Pro+</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.956.846 <small>điểm AnTuTu V12</small></div></div>
+    <div class="phone reveal"><div class="pos">HẠNG 3</div><h3>iQOO 16</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.865.546 <small>điểm AnTuTu V12</small></div></div>
+    <div class="phone reveal"><div class="pos">HẠNG 4</div><h3>Xiaomi 18 Fold</h3><div class="pchip">Xiaomi Xring O3</div><div class="pscore">4.737.201 <small>điểm AnTuTu V12</small></div></div>
+  </div>
+</section>
+
+<section id="chip">
+  <div class="sec-head"><h2>⚡ Top chip di động <span class="grad">mạnh nhất hiện tại</span></h2></div>
+  <p class="sec-sub">Xếp hạng tổng hợp theo NanoReview — điểm AnTuTu 11 và Geekbench 6. Lưu ý: điểm AnTuTu giữa iOS và Android không so sánh trực tiếp 1-1 được, nên hãy nhìn cả Geekbench (đơn nhân / đa nhân).</p>
+  <div class="chiplist" id="chipList"></div>
+  <div class="notes">
+    <div class="note"><b>🔥 Xiaomi Xring O3 — ngựa ô của năm</b><p>Chip tự phát triển của Xiaomi đứng số 1 bảng AnTuTu V12 toàn cầu tháng 10/2026 (điểm trung bình 3.010.770), trang bị trên Xiaomi 18 Fold.</p></div>
+    <div class="note"><b>🧬 Kirin 9050 Pro — Huawei trở lại</b><p>Ra mắt 10/2026 trên Mate 90 Pro Max với kiến trúc “Tau” LogicFolding, mạnh hơn đời trước 31% theo Huawei — đánh dấu sự trở lại của Kirin ở phân khúc cao cấp nhất.</p></div>
+    <div class="note"><b>🤖 Tensor G6 — không chạy đua điểm số</b><p>Chip trên Google Pixel 11 (8/2026) tập trung vào AI và nhiếp ảnh điện toán thay vì benchmark thuần, nên không nằm trong top điểm số này.</p></div>
+  </div>
+</section>
+
+<section id="hang">
+  <div class="sec-head"><h2>🏆 Top hãng điện thoại <span class="grad">thế giới</span></h2></div>
+  <p class="sec-sub">Thị phần toàn cầu quý 3/2026 theo Counterpoint Research. Các hãng ngoài top 5 không công bố thị phần riêng trong báo cáo này.</p>
+  <div class="brands" id="brandGrid"></div>
+</section>
+
 <footer>
   <p><b>PhoneTop</b> — trang tổng hợp cá nhân, không phải trang của hãng hay tổ chức nào.</p>
-  <p>Nguồn dữ liệu: Counterpoint Research (thị phần Q3/2026) · NanoReview (AnTuTu 11, Geekbench 6) · AnTuTu (xếp hạng V12, 10/2026) · GSMArena (thông số máy).<br>Điểm benchmark thay đổi theo máy đo và phiên bản phần mềm — chỉ nên dùng để tham khảo tương đối. Cập nhật: 19/11/2026.</p>
+  <p>Nguồn dữ liệu: Counterpoint Research (thị phần Q3/2026) · NanoReview (AnTuTu 11, Geekbench 6) · AnTuTu (xếp hạng V12, 10/2026) · GSMArena (thông số máy có sẵn) · MobileCity (tìm kiếm online: giá + thông số).<br>Điểm benchmark thay đổi theo máy đo và phiên bản phần mềm — chỉ nên dùng để tham khảo tương đối. Cập nhật: 20/11/2026.</p>
 </footer>
 
 </div>
+<button id="toTop" aria-label="Cuộn lên đầu trang" title="Lên đầu trang">↑</button>
 
 <script>
 'use strict';
@@ -286,7 +308,7 @@ chips.forEach((c, i) => {
   el.innerHTML =
     '<div class="rank ' + (i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '') + '">' + (i + 1) + '</div>' +
     '<div class="main"><h3>' + c.name + ' <span class="maker">' + c.maker + '</span></h3>' +
-    '<div class="phone">📱 ' + c.phone + '</div>' +
+    '<div class="phone">📱 Đang dùng trên: <b>' + c.phone + '</b></div>' +
     '<div class="scores">' +
       '<div><div class="lab">AnTuTu 11</div><div class="bar"><i style="width:' + Math.round(c.antutu / maxAntutu * 100) + '%"></i></div></div>' +
       '<div class="score">' + fmt(c.antutu) + '<small>điểm tổng</small></div>' +
@@ -412,39 +434,44 @@ async function searchOnline(q){
       onlineEl.innerHTML = '<div class="status" style="display:block">🌐 MobileCity cũng không có kết quả cho “' + esc(q) + '”.</div>';
       return;
     }
-    let html = '<div class="online-head">🌐 Kết quả online từ MobileCity — bấm “Xem thông số” để xem ngay tại đây:</div>';
+    let html = '<div class="online-head">🌐 Kết quả online từ MobileCity — ấn vào máy để xem thông số:</div>';
     data.results.forEach(p => {
-      html += '<div class="result" style="cursor:default">' +
+      html += '<div class="result ocard">' +
+        '<div class="orow" data-url="' + esc(p.url) + '">' +
         (p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy" onerror="this.remove()">' : '<div class="noimg">📱</div>') +
-        '<div style="flex:1;min-width:0"><div class="src">MobileCity · giá tham khảo</div><h4>' + esc(p.name) + '</h4>' +
-        '<p>' + (p.price ? 'Giá: <b style="color:#c44d48">' + esc(p.price) + '</b> · ' : '') + '<button class="specbtn" data-url="' + esc(p.url) + '">Xem thông số ▾</button></p>' +
-        '<div class="specbox" style="display:none"></div></div></div>';
+        '<div class="oinfo"><div class="src">MobileCity</div><h4>' + esc(p.name) + '</h4>' +
+        (p.price ? '<div class="oprice">' + esc(p.price) + '</div>' : '') + '</div>' +
+        '<span class="chev">▾</span></div>' +
+        '<div class="specbox" style="display:none"></div></div>';
     });
     onlineEl.innerHTML = html;
-    onlineEl.querySelectorAll('.specbtn').forEach(btn => btn.addEventListener('click', () => toggleSpecs(btn)));
-    const firstBtn = onlineEl.querySelector('.specbtn');
-    if(firstBtn) toggleSpecs(firstBtn);
+    onlineEl.querySelectorAll('.orow').forEach(row => row.addEventListener('click', () => toggleSpecs(row)));
   }catch(e){
     onlineEl.innerHTML = '<div class="status" style="display:block">🌐 Chưa kết nối được nguồn online lúc này — bạn thử lại sau ít phút nhé.</div>';
   }
 }
-async function toggleSpecs(btn){
-  const box = btn.parentElement.parentElement.querySelector('.specbox');
-  if(box.style.display !== 'none'){ box.style.display = 'none'; btn.textContent = 'Xem thông số ▾'; return; }
-  if(box.dataset.loaded){ box.style.display = 'block'; btn.textContent = 'Ẩn thông số ▴'; return; }
-  btn.textContent = 'Đang tải…';
+async function toggleSpecs(row){
+  const card = row.parentElement;
+  const box = card.querySelector('.specbox');
+  if(box.style.display !== 'none'){ box.style.display = 'none'; card.classList.remove('open'); return; }
+  if(box.dataset.loaded){ box.style.display = 'block'; card.classList.add('open'); return; }
+  box.innerHTML = '<div class="status" style="display:block">⏳ Đang tải thông số…</div>';
+  box.style.display = 'block'; card.classList.add('open');
   try{
-    const res = await fetch(BRIDGE + '/specs?url=' + encodeURIComponent(btn.dataset.url));
+    const res = await fetch(BRIDGE + '/specs?url=' + encodeURIComponent(row.dataset.url));
     const data = await res.json();
     if(!data.specs || !data.specs.length) throw new Error('empty');
     box.innerHTML = '<table class="spectable">' + data.specs.map(r => '<tr><td>' + esc(r.label) + '</td><td>' + esc(r.value) + '</td></tr>').join('') + '</table>';
-    box.dataset.loaded = '1'; box.style.display = 'block'; btn.textContent = 'Ẩn thông số ▴';
+    box.dataset.loaded = '1';
   }catch(e){
-    btn.textContent = 'Xem thông số ▾';
-    box.innerHTML = '<div class="status" style="display:block">Chưa tải được thông số, bạn thử lại nhé.</div>';
-    box.style.display = 'block';
+    box.innerHTML = '<div class="status" style="display:block">Chưa tải được thông số, bạn ấn lại để thử nhé.</div>';
   }
 }
+
+/* ---------- Nút cuộn lên đầu trang ---------- */
+const toTopBtn = document.getElementById('toTop');
+window.addEventListener('scroll', () => { toTopBtn.classList.toggle('show', window.scrollY > 420); }, {passive: true});
+toTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
 
 /* ---------- Hiệu ứng hiện dần khi cuộn ---------- */
 const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .08});
