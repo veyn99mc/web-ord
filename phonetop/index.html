@@ -354,11 +354,13 @@ function searchPhones(q){
   const hits = [];
   for(const p of PHONES){
     const hay = norm(p.n + ' ' + p.b + ' ' + p.chip + ' ' + p.y);
-    if(tokens.every(t => hay.indexOf(t) !== -1)){
+    const sqMatch = norm(p.n).replace(/ /g, '').indexOf(nq.replace(/ /g, '')) !== -1;
+    if(tokens.every(t => hay.indexOf(t) !== -1) || sqMatch){
       const nn = norm(p.n);
       let score = 0;
       if(nn.indexOf(nq) === 0) score += 3;
       if(nn.indexOf(nq) !== -1) score += 2;
+      if(sqMatch) score += 5;
       hits.push({score: score, p: p});
     }
   }
