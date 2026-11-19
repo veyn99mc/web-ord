@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PhoneTop — Top hãng điện thoại &amp; chip mạnh nhất 2026</title>
+<meta name="description" content="Bảng xếp hạng hãng điện thoại và chip di động mạnh nhất hiện tại, số liệu từ Counterpoint, NanoReview, AnTuTu. Tìm kiếm thông tin điện thoại theo thời gian thực.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef3ff; --card:rgba(255,255,255,.78); --card-solid:#ffffff;
+  --ink:#101736; --muted:#5b6b8c; --line:rgba(120,140,200,.22);
+  --cyan:#06b6d4; --violet:#7c3aed; --pink:#ec4899; --blue:#2563eb;
+  --grad:linear-gradient(92deg,#0891b2,#2563eb 38%,#7c3aed 72%,#db2777);
+  --shadow:0 12px 34px rgba(50,70,160,.12);
+  --radius:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.55;
+  overflow-x:hidden; min-height:100dvh;
+}
+/* Aurora background */
+.aurora{position:fixed; inset:0; z-index:-2; overflow:hidden;
+  background:
+    radial-gradient(720px 480px at 12% -6%, rgba(34,211,238,.35), transparent 62%),
+    radial-gradient(760px 520px at 88% 4%, rgba(167,139,250,.38), transparent 62%),
+    radial-gradient(680px 560px at 50% 108%, rgba(244,114,182,.26), transparent 62%),
+    linear-gradient(180deg,#f2f6ff, #e9efff 55%, #eef3ff);
+}
+.aurora::after{content:""; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(70,100,200,.055) 1px, transparent 1px),linear-gradient(90deg, rgba(70,100,200,.055) 1px, transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(ellipse 90% 62% at 50% 0%, #000 30%, transparent 78%);
+          mask-image:radial-gradient(ellipse 90% 62% at 50% 0%, #000 30%, transparent 78%);
+}
+.wrap{max-width:1060px; margin:0 auto; padding:0 16px 56px}
+/* Nav */
+nav{position:sticky; top:10px; z-index:50; margin-top:10px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:rgba(255,255,255,.72); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.85); border-radius:16px; padding:10px 14px; box-shadow:var(--shadow)}
+.logo{font-family:"Space Grotesk","Be Vietnam Pro",sans-serif; font-weight:700; font-size:19px; letter-spacing:.2px; display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink)}
+.logo .mark{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;font-size:17px;box-shadow:0 6px 16px rgba(80,80,220,.35)}
+.logo em{font-style:normal; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
+.navlinks{display:flex; gap:4px}
+.navlinks a{color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:600; padding:7px 11px; border-radius:10px}
+.navlinks a:hover{background:rgba(90,110,220,.10); color:var(--ink)}
+@media(max-width:560px){ .navlinks a{padding:7px 8px; font-size:12.5px} .logo{font-size:17px} }
+/* Hero */
+.hero{text-align:center; padding:52px 6px 10px}
+.badge{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:700; color:#3730a3;
+  background:rgba(255,255,255,.8); border:1px solid var(--line); padding:6px 13px; border-radius:999px; box-shadow:var(--shadow)}
+.badge .pulse{width:8px;height:8px;border-radius:50%;background:#22c55e; box-shadow:0 0 0 0 rgba(34,197,94,.5); animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.hero h1{font-family:"Space Grotesk","Be Vietnam Pro",sans-serif; font-size:clamp(34px,7.2vw,58px); line-height:1.12; font-weight:700; letter-spacing:-.5px; margin:20px 0 14px}
+.hero h1 .grad{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
+.hero p{color:var(--muted); font-size:clamp(14.5px,2.6vw,17px); max-width:640px; margin:0 auto}
+.herostats{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:26px}
+.hstat{background:var(--card); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.9); border-radius:16px; padding:12px 18px; box-shadow:var(--shadow); min-width:170px}
+.hstat .k{font-size:11px; font-weight:700; letter-spacing:1.2px; color:var(--muted); text-transform:uppercase}
+.hstat .v{font-family:"Space Grotesk",sans-serif; font-size:19px; font-weight:700; margin-top:2px}
+.hstat .v small{font-size:12.5px; color:var(--muted); font-weight:600}
+/* Sections */
+section{margin-top:52px; scroll-margin-top:92px}
+.sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:6px}
+.sec-head h2{font-family:"Space Grotesk","Be Vietnam Pro",sans-serif; font-size:clamp(23px,4.6vw,31px); font-weight:700; letter-spacing:-.3px}
+.sec-head h2 .grad{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
+.sec-sub{color:var(--muted); font-size:14px; margin-bottom:18px}
+/* Brand cards */
+.brands{display:grid; grid-template-columns:repeat(auto-fill,minmax(228px,1fr)); gap:13px}
+.brand{background:var(--card); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.9); border-radius:var(--radius); padding:17px; box-shadow:var(--shadow); transition:transform .18s ease, box-shadow .18s ease}
+.brand:hover{transform:translateY(-3px); box-shadow:0 18px 40px rgba(50,70,160,.18)}
+.brand .row{display:flex; align-items:center; gap:12px}
+.avatar{width:48px;height:48px; flex:none; border-radius:15px; display:grid; place-items:center; color:#fff; font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:21px; box-shadow:0 8px 18px rgba(30,40,90,.25)}
+.brand h3{font-size:16.5px; font-weight:800}
+.brand .country{font-size:12px; color:var(--muted); font-weight:600}
+.sharebar{height:8px; border-radius:99px; background:rgba(100,120,200,.14); margin:13px 0 6px; overflow:hidden}
+.sharebar i{display:block; height:100%; border-radius:99px; background:var(--grad)}
+.shareline{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); font-weight:600}
+.shareline b{color:var(--ink)}
+.brand .flagship{margin-top:11px; font-size:13.5px}
+.brand .flagship span{display:block; font-size:11px; font-weight:700; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-bottom:2px}
+.brand .chipset{margin-top:8px; display:inline-block; font-size:12px; font-weight:700; color:#3730a3; background:rgba(99,102,241,.12); border:1px solid rgba(99,102,241,.18); padding:4px 10px; border-radius:999px}
+/* Chip ranking */
+.chiplist{display:grid; gap:11px}
+.chip{display:flex; gap:14px; align-items:flex-start; background:var(--card); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.9); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)}
+.chip.top1{border:1px solid rgba(245,197,66,.65); background:linear-gradient(180deg, rgba(255,248,220,.92), rgba(255,255,255,.82))}
+.rank{flex:none; width:42px; height:42px; border-radius:13px; display:grid; place-items:center; font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:17px; color:#fff; background:linear-gradient(145deg,#64748b,#94a3b8)}
+.rank.r1{background:linear-gradient(145deg,#f59e0b,#facc15); color:#713f12; box-shadow:0 8px 18px rgba(245,158,11,.4)}
+.rank.r2{background:linear-gradient(145deg,#94a3b8,#e2e8f0); color:#334155}
+.rank.r3{background:linear-gradient(145deg,#d97706,#f59e0b); color:#451a03}
+.chip .main{flex:1; min-width:0}
+.chip h3{font-size:16.5px; font-weight:800; display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.chip h3 .maker{font-size:11.5px; font-weight:700; color:#fff; background:linear-gradient(92deg,#0891b2,#7c3aed); padding:3px 9px; border-radius:999px}
+.chip .phone{font-size:13px; color:var(--muted); margin-top:2px}
+.scores{display:grid; grid-template-columns:1fr auto auto; gap:6px 16px; align-items:center; margin-top:11px}
+@media(max-width:560px){ .scores{grid-template-columns:1fr auto} .scores .gb2{display:none} }
+.scores .lab{font-size:11px; font-weight:700; letter-spacing:.8px; color:var(--muted); text-transform:uppercase}
+.bar{height:9px; border-radius:99px; background:rgba(100,120,200,.14); overflow:hidden; margin-top:4px}
+.bar i{display:block; height:100%; border-radius:99px; background:var(--grad)}
+.score{font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:16px; text-align:right}
+.score small{display:block; font-family:"Be Vietnam Pro",sans-serif; font-size:10.5px; color:var(--muted); font-weight:600}
+.gb{text-align:right}
+.gb .n{font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:14.5px}
+.gb small{display:block; font-size:10.5px; color:var(--muted); font-weight:600}
+.notes{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:13px; margin-top:16px}
+.note{background:rgba(255,255,255,.65); border:1px dashed rgba(110,130,220,.45); border-radius:var(--radius); padding:15px 16px; font-size:13.5px}
+.note b{display:block; font-size:14.5px; margin-bottom:4px}
+.note p{color:var(--muted)}
+/* Top phones strip */
+.phones{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:13px}
+.phone{background:var(--card); border:1px solid rgba(255,255,255,.9); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); backdrop-filter:blur(10px)}
+.phone .pos{font-family:"Space Grotesk",sans-serif; font-size:12px; font-weight:700; color:var(--violet); letter-spacing:1px}
+.phone h3{font-size:16px; font-weight:800; margin:3px 0 2px}
+.phone .pchip{font-size:12.5px; color:var(--muted); font-weight:600}
+.phone .pscore{font-family:"Space Grotesk",sans-serif; font-size:21px; font-weight:700; margin-top:9px}
+.phone .pscore small{font-size:11.5px; color:var(--muted); font-family:"Be Vietnam Pro",sans-serif; font-weight:600}
+/* Search */
+.searchbox{background:var(--card); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.9); border-radius:24px; padding:20px; box-shadow:var(--shadow)}
+.searchrow{display:flex; gap:9px}
+.searchrow input{flex:1; min-width:0; font:inherit; font-size:15.5px; padding:13px 16px; border-radius:14px; border:1.5px solid var(--line); background:#fff; color:var(--ink)}
+.searchrow input:focus{outline:none; border-color:#818cf8; box-shadow:0 0 0 4px rgba(99,102,241,.15)}
+.searchrow button{font:inherit; font-weight:800; font-size:15px; color:#fff; border:0; border-radius:14px; padding:13px 22px; background:var(--grad); cursor:pointer; box-shadow:0 10px 22px rgba(90,80,220,.35)}
+.searchrow button:active{transform:scale(.98)}
+.quick{display:flex; flex-wrap:wrap; gap:7px; margin-top:13px}
+.quick span{font-size:12.5px; color:var(--muted); font-weight:600; padding-top:5px}
+.quick button{font:inherit; font-size:12.5px; font-weight:700; color:#3730a3; background:rgba(99,102,241,.10); border:1px solid rgba(99,102,241,.18); padding:5px 11px; border-radius:999px; cursor:pointer}
+.results{display:grid; gap:11px; margin-top:16px}
+.result{display:flex; gap:13px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:13px; text-decoration:none; color:var(--ink); transition:transform .15s ease}
+.result:hover{transform:translateY(-2px)}
+.result img{width:64px; height:64px; object-fit:cover; border-radius:12px; flex:none; background:#e8edfb}
+.result .noimg{width:64px;height:64px;border-radius:12px;flex:none;display:grid;place-items:center;font-size:26px;background:linear-gradient(145deg,#e0e7ff,#fae8ff)}
+.result h4{font-size:15px; font-weight:800}
+.result p{font-size:13px; color:var(--muted); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+.result .src{font-size:11px; font-weight:700; color:#0891b2; letter-spacing:.6px; text-transform:uppercase}
+.status{font-size:13.5px; color:var(--muted); text-align:center; padding:8px 0 2px; display:none}
+.extlinks{display:flex; flex-wrap:wrap; gap:8px; margin-top:15px}
+.extlinks a{font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; background:rgba(255,255,255,.85); border:1px solid var(--line); padding:8px 14px; border-radius:999px}
+.extlinks a:hover{border-color:#818cf8}
+footer{margin-top:58px; text-align:center; color:var(--muted); font-size:12.5px; line-height:1.7}
+footer b{color:var(--ink)}
+.reveal{opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease}
+.reveal.in{opacity:1; transform:none}
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+<div class="wrap">
+
+<nav>
+  <a class="logo" href="#"><span class="mark">📱</span>Phone<em>Top</em></a>
+  <div class="navlinks">
+    <a href="#hang">Hãng</a>
+    <a href="#chip">Top chip</a>
+    <a href="#may">Top máy</a>
+    <a href="#timkiem">Tìm kiếm</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <span class="badge"><span class="pulse"></span> Dữ liệu cập nhật tháng 11/2026</span>
+  <h1>Thế giới điện thoại<br><span class="grad">&amp; những con chip mạnh nhất hành tinh</span></h1>
+  <p>Bảng xếp hạng các hãng điện thoại hàng đầu thế giới và những bộ vi xử lý di động mạnh nhất hiện tại — tổng hợp từ Counterpoint Research, NanoReview và AnTuTu, kèm tìm kiếm thông tin theo thời gian thực.</p>
+  <div class="herostats">
+    <div class="hstat"><div class="k">Chip mạnh nhất</div><div class="v">Snapdragon 8 Elite <small>Extreme Gen 6</small></div></div>
+    <div class="hstat"><div class="k">AnTuTu cao nhất</div><div class="v">5.195.978 <small>điểm</small></div></div>
+    <div class="hstat"><div class="k">Hãng số 1 thế giới</div><div class="v">Samsung <small>23% thị phần</small></div></div>
+  </div>
+</header>
+
+<section id="hang">
+  <div class="sec-head"><h2>🏆 Top hãng điện thoại <span class="grad">thế giới</span></h2></div>
+  <p class="sec-sub">Thị phần toàn cầu quý 3/2026 theo Counterpoint Research. Các hãng ngoài top 5 không công bố thị phần riêng trong báo cáo này.</p>
+  <div class="brands" id="brandGrid"></div>
+</section>
+
+<section id="chip">
+  <div class="sec-head"><h2>⚡ Top chip di động <span class="grad">mạnh nhất hiện tại</span></h2></div>
+  <p class="sec-sub">Xếp hạng tổng hợp theo NanoReview — điểm AnTuTu 11 và Geekbench 6. Lưu ý: điểm AnTuTu giữa iOS và Android không so sánh trực tiếp 1-1 được, nên hãy nhìn cả Geekbench (đơn nhân / đa nhân).</p>
+  <div class="chiplist" id="chipList"></div>
+  <div class="notes">
+    <div class="note"><b>🔥 Xiaomi Xring O3 — ngựa ô của năm</b><p>Chip tự phát triển của Xiaomi đứng số 1 bảng AnTuTu V12 toàn cầu tháng 10/2026 (điểm trung bình 3.010.770), trang bị trên Xiaomi 18 Fold.</p></div>
+    <div class="note"><b>🧬 Kirin 9050 Pro — Huawei trở lại</b><p>Ra mắt 10/2026 trên Mate 90 Pro Max với kiến trúc “Tau” LogicFolding, mạnh hơn đời trước 31% theo Huawei — đánh dấu sự trở lại của Kirin ở phân khúc cao cấp nhất.</p></div>
+    <div class="note"><b>🤖 Tensor G6 — không chạy đua điểm số</b><p>Chip trên Google Pixel 11 (8/2026) tập trung vào AI và nhiếp ảnh điện toán thay vì benchmark thuần, nên không nằm trong top điểm số này.</p></div>
+  </div>
+</section>
+
+<section id="may">
+  <div class="sec-head"><h2>📱 Điện thoại mạnh nhất <span class="grad">tháng 10/2026</span></h2></div>
+  <p class="sec-sub">Bảng xếp hạng flagship Android của AnTuTu (bản V12, thị trường Trung Quốc) — điểm trung bình của hàng nghìn lượt đo thực tế.</p>
+  <div class="phones">
+    <div class="phone reveal"><div class="pos">HẠNG 1</div><h3>Honor Win 2</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.958.339 <small>điểm AnTuTu V12</small></div></div>
+    <div class="phone reveal"><div class="pos">HẠNG 2</div><h3>RedMagic 12 Pro+</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.956.846 <small>điểm AnTuTu V12</small></div></div>
+    <div class="phone reveal"><div class="pos">HẠNG 3</div><h3>iQOO 16</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.865.546 <small>điểm AnTuTu V12</small></div></div>
+    <div class="phone reveal"><div class="pos">HẠNG 4</div><h3>Xiaomi 18 Fold</h3><div class="pchip">Xiaomi Xring O3</div><div class="pscore">4.737.201 <small>điểm AnTuTu V12</small></div></div>
+  </div>
+</section>
+
+<section id="timkiem">
+  <div class="sec-head"><h2>🔎 Tìm kiếm thông tin <span class="grad">thời gian thực</span></h2></div>
+  <p class="sec-sub">Gõ tên điện thoại, hãng hoặc con chip — web sẽ truy vấn trực tiếp Wikipedia (tiếng Việt &amp; tiếng Anh) ngay lúc bạn tìm, không phải dữ liệu cũ lưu sẵn.</p>
+  <div class="searchbox">
+    <div class="searchrow">
+      <input id="q" type="search" placeholder="Ví dụ: iPhone 18 Pro Max, Snapdragon 8 Elite Gen 6, Galaxy S26 Ultra…" autocomplete="off">
+      <button id="searchBtn">Tìm</button>
+    </div>
+    <div class="quick"><span>Gợi ý:</span>
+      <button data-q="iPhone 18 Pro">iPhone 18 Pro</button>
+      <button data-q="Samsung Galaxy S26 Ultra">Galaxy S26 Ultra</button>
+      <button data-q="Snapdragon 8 Elite">Snapdragon 8 Elite</button>
+      <button data-q="Xiaomi 18">Xiaomi 18</button>
+      <button data-q="Huawei Mate 90">Huawei Mate 90</button>
+    </div>
+    <div class="status" id="searchStatus"></div>
+    <div class="results" id="results"></div>
+    <div class="extlinks">
+      <a href="https://www.gsmarena.com/" target="_blank" rel="noopener">📐 GSMArena — tra thông số chi tiết</a>
+      <a href="https://nanoreview.net/en/soc-list" target="_blank" rel="noopener">🏅 NanoReview — bảng chip đầy đủ</a>
+      <a href="https://www.antutu.com/en/ranking/rank11.htm" target="_blank" rel="noopener">🚀 AnTuTu — xếp hạng chính thức</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><b>PhoneTop</b> — trang tổng hợp cá nhân, không phải trang của hãng hay tổ chức nào.</p>
+  <p>Nguồn dữ liệu: Counterpoint Research (thị phần Q3/2026) · NanoReview (AnTuTu 11, Geekbench 6) · AnTuTu (xếp hạng V12, 10/2026).<br>Điểm benchmark thay đổi theo máy đo và phiên bản phần mềm — chỉ nên dùng để tham khảo tương đối. Cập nhật: 19/11/2026.</p>
+</footer>
+
+</div>
+
+<script>
+'use strict';
+/* ---------- Dữ liệu hãng ---------- */
+const brands = [
+  {name:'Samsung', letter:'S', color:'linear-gradient(145deg,#1428a0,#3b82f6)', country:'Hàn Quốc', share:23, flagship:'Galaxy S26 Ultra · Z Fold8', chip:'Snapdragon 8 Elite Gen 5 / Exynos 2600'},
+  {name:'Apple', letter:'', color:'linear-gradient(145deg,#111827,#4b5563)', country:'Mỹ', share:22, flagship:'iPhone 18 Pro Max', chip:'Apple A20 Pro'},
+  {name:'Xiaomi', letter:'Mi', color:'linear-gradient(145deg,#ff6900,#ff9a3d)', country:'Trung Quốc', share:10, flagship:'Xiaomi 18 Pro Max · 18 Fold', chip:'Snapdragon 8 Elite Extreme Gen 6 · Xring O3'},
+  {name:'OPPO', letter:'O', color:'linear-gradient(145deg,#009b77,#34d399)', country:'Trung Quốc', share:9, flagship:'Find X9 Pro', chip:'Dimensity 9500'},
+  {name:'vivo', letter:'V', color:'linear-gradient(145deg,#415fff,#60a5fa)', country:'Trung Quốc', share:8, flagship:'vivo X500 Pro Max', chip:'Dimensity 9600 Pro'},
+  {name:'Huawei', letter:'H', color:'linear-gradient(145deg,#cf0a2c,#f43f5e)', country:'Trung Quốc', share:null, flagship:'Mate 90 Pro Max · Mate XT 2', chip:'Kirin 9050 Pro'},
+  {name:'Google', letter:'G', color:'linear-gradient(145deg,#4285f4,#34a853)', country:'Mỹ', share:null, flagship:'Pixel 11 Pro XL', chip:'Google Tensor G6'},
+  {name:'Sony', letter:'S', color:'linear-gradient(145deg,#000000,#374151)', country:'Nhật Bản', share:null, flagship:'Xperia 1 VIII', chip:'Snapdragon 8 Elite Gen 5'},
+  {name:'Honor', letter:'H', color:'linear-gradient(145deg,#0aa2c0,#22d3ee)', country:'Trung Quốc', share:null, flagship:'Honor Win 2 · Magic8 Pro', chip:'Snapdragon 8 Elite Extreme Gen 6'},
+  {name:'OnePlus', letter:'1+', color:'linear-gradient(145deg,#eb0028,#fb7185)', country:'Trung Quốc', share:null, flagship:'OnePlus 15', chip:'Snapdragon 8 Elite Gen 5'}
+];
+const brandGrid = document.getElementById('brandGrid');
+brands.forEach((b, i) => {
+  const el = document.createElement('article');
+  el.className = 'brand reveal';
+  el.innerHTML =
+    '<div class="row"><div class="avatar" style="background:' + b.color + '">' + b.letter + '</div>' +
+    '<div><h3>' + (i + 1) + '. ' + b.name + '</h3><div class="country">' + b.country + '</div></div></div>' +
+    (b.share !== null
+      ? '<div class="sharebar"><i style="width:' + b.share + '%"></i></div><div class="shareline"><span>Thị phần toàn cầu Q3/2026</span><b>' + b.share + '%</b></div>'
+      : '<div class="shareline" style="margin-top:13px"><span>Ngoài top 5 thị phần toàn cầu</span><b>—</b></div>') +
+    '<div class="flagship"><span>Flagship mới nhất</span>' + b.flagship + '</div>' +
+    '<span class="chipset">⚙ ' + b.chip + '</span>';
+  brandGrid.appendChild(el);
+});
+
+/* ---------- Dữ liệu chip ---------- */
+const chips = [
+  {name:'Snapdragon 8 Elite Extreme Gen 6', maker:'Qualcomm', antutu:5195978, gbS:4327, gbM:12873, phone:'Xiaomi 18 Pro Max · Honor Win 2'},
+  {name:'Snapdragon 8 Elite Gen 6', maker:'Qualcomm', antutu:4945385, gbS:4301, gbM:12490, phone:'Xiaomi 18 Pro'},
+  {name:'Dimensity 9600 Pro', maker:'MediaTek', antutu:4838033, gbS:4188, gbM:13145, phone:'vivo X500 Pro Max'},
+  {name:'Apple A20 Pro', maker:'Apple', antutu:3434654, gbS:4733, gbM:12836, phone:'iPhone 18 Pro · 18 Pro Max'},
+  {name:'Dimensity 9600M', maker:'MediaTek', antutu:4011932, gbS:3302, gbM:10240, phone:'vivo X500'},
+  {name:'Snapdragon 8 Elite Gen 5', maker:'Qualcomm', antutu:3950082, gbS:3639, gbM:11047, phone:'Galaxy S26 Ultra · OnePlus 15 · Xperia 1 VIII'},
+  {name:'Dimensity 9500', maker:'MediaTek', antutu:3519907, gbS:3488, gbM:10280, phone:'OPPO Find X9 Pro · vivo X300 Pro'},
+  {name:'Exynos 2600', maker:'Samsung', antutu:2929281, gbS:2843, gbM:10192, phone:'Galaxy S26 (một số thị trường)'},
+  {name:'Apple A19 Pro', maker:'Apple', antutu:2538751, gbS:3970, gbM:10558, phone:'iPhone 17 Pro · 17 Pro Max'}
+];
+const maxAntutu = Math.max.apply(null, chips.map(c => c.antutu));
+const fmt = n => n.toLocaleString('vi-VN');
+const chipList = document.getElementById('chipList');
+chips.forEach((c, i) => {
+  const el = document.createElement('article');
+  el.className = 'chip reveal' + (i === 0 ? ' top1' : '');
+  el.innerHTML =
+    '<div class="rank ' + (i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '') + '">' + (i + 1) + '</div>' +
+    '<div class="main"><h3>' + c.name + ' <span class="maker">' + c.maker + '</span></h3>' +
+    '<div class="phone">📱 ' + c.phone + '</div>' +
+    '<div class="scores">' +
+      '<div><div class="lab">AnTuTu 11</div><div class="bar"><i style="width:' + Math.round(c.antutu / maxAntutu * 100) + '%"></i></div></div>' +
+      '<div class="score">' + fmt(c.antutu) + '<small>điểm tổng</small></div>' +
+      '<div class="gb gb2"><div class="n">' + fmt(c.gbS) + ' / ' + fmt(c.gbM) + '</div><small>Geekbench 6 · đơn / đa nhân</small></div>' +
+    '</div></div>';
+  chipList.appendChild(el);
+});
+
+/* ---------- Tìm kiếm realtime qua Wikipedia ---------- */
+const qInput = document.getElementById('q');
+const resultsEl = document.getElementById('results');
+const statusEl = document.getElementById('searchStatus');
+function esc(s){ return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function wikiSearch(lang, q){
+  const url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=' +
+    encodeURIComponent(q) + '&gsrlimit=6&prop=pageimages%7Cextracts&exintro=1&explaintext=1&exsentences=3&pithumbsize=200&format=json&origin=*';
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  if(!data.query || !data.query.pages) return [];
+  return Object.values(data.query.pages).sort((a, b) => a.index - b.index)
+    .map(p => ({title: p.title, text: p.extract || '', img: p.thumbnail ? p.thumbnail.source : '',
+                 link: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(p.title.replace(/ /g, '_')), lang: lang}));
+}
+async function doSearch(){
+  const q = qInput.value.trim();
+  if(!q){ statusEl.style.display = 'block'; statusEl.textContent = 'Bạn gõ tên máy hoặc chip cần tìm trước đã nhé.'; return; }
+  statusEl.style.display = 'block'; statusEl.textContent = '⏳ Đang truy vấn trực tiếp Wikipedia…';
+  resultsEl.innerHTML = '';
+  try{
+    let items = await wikiSearch('vi', q);
+    let en = [];
+    try{ en = await wikiSearch('en', q); }catch(e){ /* bỏ qua nếu wiki EN lỗi */ }
+    const seen = new Set(items.map(x => x.title.toLowerCase()));
+    en.forEach(x => { if(!seen.has(x.title.toLowerCase())) items.push(x); });
+    items = items.slice(0, 8);
+    if(!items.length){ statusEl.textContent = 'Không tìm thấy kết quả cho “' + q + '”. Thử gõ tên tiếng Anh hoặc ngắn gọn hơn xem.'; return; }
+    statusEl.textContent = 'Tìm thấy ' + items.length + ' kết quả cho “' + q + '” — dữ liệu vừa lấy trực tiếp từ Wikipedia.';
+    items.forEach(it => {
+      const a = document.createElement('a');
+      a.className = 'result'; a.href = it.link; a.target = '_blank'; a.rel = 'noopener';
+      a.innerHTML = (it.img ? '<img src="' + esc(it.img) + '" alt="">' : '<div class="noimg">📱</div>') +
+        '<div><div class="src">Wikipedia · ' + (it.lang === 'vi' ? 'Tiếng Việt' : 'English') + '</div><h4>' + esc(it.title) + '</h4><p>' + esc(it.text) + '</p></div>';
+      resultsEl.appendChild(a);
+    });
+  }catch(err){
+    statusEl.textContent = 'Không kết nối được tới Wikipedia (mạng hoặc trình duyệt chặn). Bạn thử lại sau ít phút nhé.';
+  }
+}
+document.getElementById('searchBtn').addEventListener('click', doSearch);
+qInput.addEventListener('keydown', e => { if(e.key === 'Enter') doSearch(); });
+document.querySelectorAll('.quick button').forEach(b => b.addEventListener('click', () => { qInput.value = b.dataset.q; doSearch(); }));
+
+/* ---------- Hiệu ứng hiện dần khi cuộn ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .08});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
