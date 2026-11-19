@@ -142,6 +142,7 @@ section{margin-top:52px; scroll-margin-top:92px}
 .extlinks{display:flex; flex-wrap:wrap; gap:8px; margin-top:15px}
 .extlinks a{font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; background:rgba(255,255,255,.85); border:1px solid var(--line); padding:8px 14px; border-radius:999px}
 .extlinks a:hover{border-color:#818cf8}
+.specgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:12.5px;color:var(--muted);margin-top:6px}.specgrid b{color:var(--ink);font-weight:700}
 footer{margin-top:58px; text-align:center; color:var(--muted); font-size:12.5px; line-height:1.7}
 footer b{color:var(--ink)}
 .reveal{opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease}
@@ -165,7 +166,7 @@ footer b{color:var(--ink)}
 <header class="hero">
   <span class="badge"><span class="pulse"></span> Dữ liệu cập nhật tháng 11/2026</span>
   <h1>Thế giới điện thoại<br><span class="grad">&amp; những con chip mạnh nhất hành tinh</span></h1>
-  <p>Bảng xếp hạng các hãng điện thoại hàng đầu thế giới và những bộ vi xử lý di động mạnh nhất hiện tại — tổng hợp từ Counterpoint Research, NanoReview và AnTuTu, kèm tìm kiếm thông tin theo thời gian thực.</p>
+  <p>Bảng xếp hạng các hãng điện thoại hàng đầu thế giới và những bộ vi xử lý di động mạnh nhất hiện tại — tổng hợp từ Counterpoint Research, NanoReview và AnTuTu, kèm tra cứu thông số điện thoại nhanh ngay trên trang.</p>
   <div class="herostats">
     <div class="hstat"><div class="k">Chip mạnh nhất</div><div class="v">Snapdragon 8 Elite <small>Extreme Gen 6</small></div></div>
     <div class="hstat"><div class="k">AnTuTu cao nhất</div><div class="v">5.195.978 <small>điểm</small></div></div>
@@ -202,33 +203,28 @@ footer b{color:var(--ink)}
 </section>
 
 <section id="timkiem">
-  <div class="sec-head"><h2>🔎 Tìm kiếm thông tin <span class="grad">thời gian thực</span></h2></div>
-  <p class="sec-sub">Gõ tên điện thoại, hãng hoặc con chip — web sẽ truy vấn trực tiếp Wikipedia (tiếng Việt &amp; tiếng Anh) ngay lúc bạn tìm, không phải dữ liệu cũ lưu sẵn.</p>
+  <div class="sec-head"><h2>🔎 Tra cứu <span class="grad">thông số điện thoại</span></h2></div>
+  <p class="sec-sub">Gõ tên máy, tên hãng hoặc tên chip — tra ngay trong kho thông số có sẵn trên trang (tổng hợp từ GSMArena). Chạy tại chỗ trên máy bạn, không cần mạng, gõ không dấu cũng tìm ra.</p>
   <div class="searchbox">
     <div class="searchrow">
       <input id="q" type="search" placeholder="Ví dụ: iPhone 18 Pro Max, Snapdragon 8 Elite Gen 6, Galaxy S26 Ultra…" autocomplete="off">
       <button id="searchBtn">Tìm</button>
     </div>
     <div class="quick"><span>Gợi ý:</span>
-      <button data-q="iPhone 18 Pro">iPhone 18 Pro</button>
-      <button data-q="Samsung Galaxy S26 Ultra">Galaxy S26 Ultra</button>
-      <button data-q="Snapdragon 8 Elite">Snapdragon 8 Elite</button>
-      <button data-q="Xiaomi 18">Xiaomi 18</button>
-      <button data-q="Huawei Mate 90">Huawei Mate 90</button>
+      <button data-q="iPhone 15 Pro Max">iPhone 15 Pro Max</button>
+      <button data-q="Galaxy S24 Ultra">Galaxy S24 Ultra</button>
+      <button data-q="Snapdragon 8 Gen 3">Snapdragon 8 Gen 3</button>
+      <button data-q="Pixel">Pixel</button>
+      <button data-q="Xperia">Xperia</button>
     </div>
     <div class="status" id="searchStatus"></div>
     <div class="results" id="results"></div>
-    <div class="extlinks">
-      <a href="https://www.gsmarena.com/" target="_blank" rel="noopener">📐 GSMArena — tra thông số chi tiết</a>
-      <a href="https://nanoreview.net/en/soc-list" target="_blank" rel="noopener">🏅 NanoReview — bảng chip đầy đủ</a>
-      <a href="https://www.antutu.com/en/ranking/rank11.htm" target="_blank" rel="noopener">🚀 AnTuTu — xếp hạng chính thức</a>
-    </div>
   </div>
 </section>
 
 <footer>
   <p><b>PhoneTop</b> — trang tổng hợp cá nhân, không phải trang của hãng hay tổ chức nào.</p>
-  <p>Nguồn dữ liệu: Counterpoint Research (thị phần Q3/2026) · NanoReview (AnTuTu 11, Geekbench 6) · AnTuTu (xếp hạng V12, 10/2026).<br>Điểm benchmark thay đổi theo máy đo và phiên bản phần mềm — chỉ nên dùng để tham khảo tương đối. Cập nhật: 19/11/2026.</p>
+  <p>Nguồn dữ liệu: Counterpoint Research (thị phần Q3/2026) · NanoReview (AnTuTu 11, Geekbench 6) · AnTuTu (xếp hạng V12, 10/2026) · GSMArena (thông số máy).<br>Điểm benchmark thay đổi theo máy đo và phiên bản phần mềm — chỉ nên dùng để tham khảo tương đối. Cập nhật: 19/11/2026.</p>
 </footer>
 
 </div>
@@ -293,56 +289,99 @@ chips.forEach((c, i) => {
   chipList.appendChild(el);
 });
 
-/* ---------- Tìm kiếm realtime qua Wikipedia ---------- */
+/* ---------- Tra cứu thông số: kho dữ liệu có sẵn trên trang (nguồn GSMArena, cập nhật 11/2026) ---------- */
+const PHONES = [
+  {n:'iPhone 18 Pro Max', b:'Apple', y:2026, chip:'Apple A20 Pro'},
+  {n:'Galaxy S26 Ultra', b:'Samsung', y:2026, chip:'Snapdragon 8 Elite Gen 5'},
+  {n:'Xiaomi 18 Pro Max', b:'Xiaomi', y:2026, chip:'Snapdragon 8 Elite Extreme Gen 6'},
+  {n:'Xiaomi 18 Fold', b:'Xiaomi', y:2026, chip:'Xiaomi Xring O3'},
+  {n:'vivo X500 Pro Max', b:'vivo', y:2026, chip:'Dimensity 9600 Pro'},
+  {n:'Huawei Mate 90 Pro Max', b:'Huawei', y:2026, chip:'Kirin 9050 Pro'},
+  {n:'Pixel 11 Pro XL', b:'Google', y:2026, chip:'Google Tensor G6'},
+  {n:'Xperia 1 VIII', b:'Sony', y:2026, chip:'Snapdragon 8 Elite Gen 5', scr:'6.5" OLED FHD+ · 120Hz', cam:'48 MP', pin:'5.000 mAh'},
+  {n:'Honor Win 2', b:'Honor', y:2026, chip:'Snapdragon 8 Elite Extreme Gen 6', pin:'10.100 mAh'},
+  {n:'iPhone 17 Pro Max', b:'Apple', y:2025, chip:'Apple A19 Pro', scr:'6.9" OLED · 120Hz', cam:'48 MP', pin:'4.832 mAh'},
+  {n:'iPhone 17', b:'Apple', y:2025, chip:'Apple A19', scr:'6.3" OLED · 120Hz', cam:'48 MP', pin:'3.692 mAh'},
+  {n:'Galaxy S25 Ultra', b:'Samsung', y:2025, chip:'Snapdragon 8 Elite', scr:'6.9" AMOLED · 120Hz', cam:'200 MP', pin:'5.000 mAh'},
+  {n:'Galaxy S25', b:'Samsung', y:2025, chip:'Snapdragon 8 Elite', scr:'6.2" AMOLED · 120Hz', cam:'50 MP', pin:'4.000 mAh'},
+  {n:'Galaxy Z Fold7', b:'Samsung', y:2025, chip:'Snapdragon 8 Elite', scr:'8.0" AMOLED gập · 120Hz', cam:'200 MP', pin:'4.400 mAh'},
+  {n:'Xiaomi 15 Ultra', b:'Xiaomi', y:2025, chip:'Snapdragon 8 Elite', scr:'6.73" AMOLED · 120Hz', cam:'50 MP · cảm biến 1 inch', pin:'5.410 mAh'},
+  {n:'Xiaomi 15', b:'Xiaomi', y:2025, chip:'Snapdragon 8 Elite', scr:'6.36" AMOLED · 120Hz', cam:'50 MP', pin:'5.240 mAh'},
+  {n:'OPPO Find X9 Pro', b:'OPPO', y:2025, chip:'Dimensity 9500', scr:'6.78" AMOLED · 120Hz', cam:'50 MP + tele 200 MP', pin:'7.500 mAh'},
+  {n:'vivo X300 Pro', b:'vivo', y:2025, chip:'Dimensity 9500', scr:'6.78" AMOLED · 120Hz', cam:'50 MP + tele 200 MP', pin:'6.510 mAh'},
+  {n:'Pixel 10 Pro XL', b:'Google', y:2025, chip:'Google Tensor G5', scr:'6.8" OLED · 120Hz', cam:'50 MP', pin:'5.200 mAh'},
+  {n:'OnePlus 15', b:'OnePlus', y:2025, chip:'Snapdragon 8 Elite Gen 5', scr:'6.78" AMOLED · 165Hz', cam:'50 MP', pin:'7.300 mAh'},
+  {n:'OnePlus 13', b:'OnePlus', y:2025, chip:'Snapdragon 8 Elite', scr:'6.82" AMOLED · 120Hz', cam:'50 MP', pin:'6.000 mAh'},
+  {n:'Huawei Pura 80 Ultra', b:'Huawei', y:2025, chip:'Kirin 9020', scr:'6.8" OLED · 120Hz', cam:'50 MP · cảm biến 1 inch', pin:'5.170 mAh'},
+  {n:'Huawei Mate 80 Pro Max', b:'Huawei', y:2025, chip:'Kirin 9030 Pro'},
+  {n:'Honor Magic7 Pro', b:'Honor', y:2025, chip:'Snapdragon 8 Elite', scr:'6.8" OLED · 120Hz', cam:'50 MP + tele 200 MP'},
+  {n:'iPhone 16 Pro Max', b:'Apple', y:2024, chip:'Apple A18 Pro', scr:'6.9" OLED · 120Hz', cam:'48 MP', pin:'4.685 mAh'},
+  {n:'iPhone 16', b:'Apple', y:2024, chip:'Apple A18', scr:'6.1" OLED · 60Hz', cam:'48 MP', pin:'3.561 mAh'},
+  {n:'Galaxy S24 Ultra', b:'Samsung', y:2024, chip:'Snapdragon 8 Gen 3', scr:'6.8" AMOLED · 120Hz', cam:'200 MP', pin:'5.000 mAh'},
+  {n:'Galaxy S24', b:'Samsung', y:2024, chip:'Snapdragon 8 Gen 3 / Exynos 2400', scr:'6.2" AMOLED · 120Hz', cam:'50 MP', pin:'4.000 mAh'},
+  {n:'Xiaomi 14 Ultra', b:'Xiaomi', y:2024, chip:'Snapdragon 8 Gen 3', scr:'6.73" AMOLED · 120Hz', cam:'50 MP · cảm biến 1 inch', pin:'5.000 mAh'},
+  {n:'Xiaomi 14', b:'Xiaomi', y:2024, chip:'Snapdragon 8 Gen 3', scr:'6.36" AMOLED · 120Hz', cam:'50 MP', pin:'4.610 mAh'},
+  {n:'vivo X200 Pro', b:'vivo', y:2024, chip:'Dimensity 9400', scr:'6.78" AMOLED · 120Hz', cam:'50 MP + tele 200 MP', pin:'6.000 mAh'},
+  {n:'OPPO Find X8 Pro', b:'OPPO', y:2024, chip:'Dimensity 9400', scr:'6.78" AMOLED · 120Hz', cam:'50 MP', pin:'5.910 mAh'},
+  {n:'Pixel 9 Pro XL', b:'Google', y:2024, chip:'Google Tensor G4', scr:'6.8" OLED · 120Hz', cam:'50 MP', pin:'5.060 mAh'},
+  {n:'OnePlus 12', b:'OnePlus', y:2024, chip:'Snapdragon 8 Gen 3', scr:'6.82" AMOLED · 120Hz', cam:'50 MP', pin:'5.400 mAh'},
+  {n:'Xperia 1 VI', b:'Sony', y:2024, chip:'Snapdragon 8 Gen 3', scr:'6.5" OLED FHD+ · 120Hz', cam:'48 MP', pin:'5.000 mAh'},
+  {n:'iPhone 15 Pro Max', b:'Apple', y:2023, chip:'Apple A17 Pro', scr:'6.7" OLED · 120Hz', cam:'48 MP', pin:'4.422 mAh'},
+  {n:'iPhone 15', b:'Apple', y:2023, chip:'Apple A16 Bionic', scr:'6.1" OLED · 60Hz', cam:'48 MP', pin:'3.349 mAh'},
+  {n:'Galaxy S23 Ultra', b:'Samsung', y:2023, chip:'Snapdragon 8 Gen 2', scr:'6.8" AMOLED · 120Hz', cam:'200 MP', pin:'5.000 mAh'},
+  {n:'Pixel 8 Pro', b:'Google', y:2023, chip:'Google Tensor G3', scr:'6.7" OLED · 120Hz', cam:'50 MP', pin:'5.050 mAh'},
+  {n:'Xiaomi 13 Pro', b:'Xiaomi', y:2023, chip:'Snapdragon 8 Gen 2', scr:'6.73" AMOLED · 120Hz', cam:'50 MP · cảm biến 1 inch', pin:'4.820 mAh'},
+  {n:'vivo X100 Pro', b:'vivo', y:2023, chip:'Dimensity 9300', scr:'6.78" AMOLED · 120Hz', cam:'50 MP · cảm biến 1 inch', pin:'5.400 mAh'},
+  {n:'Xperia 1 V', b:'Sony', y:2023, chip:'Snapdragon 8 Gen 2', scr:'6.5" OLED 4K · 120Hz', cam:'48 MP', pin:'5.000 mAh'}
+];
 const qInput = document.getElementById('q');
 const resultsEl = document.getElementById('results');
 const statusEl = document.getElementById('searchStatus');
 function esc(s){ return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-async function wikiSearch(lang, q){
-  const url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=' +
-    encodeURIComponent(q) + '&gsrlimit=6&prop=pageimages%7Cextracts&exintro=1&explaintext=1&exsentences=3&pithumbsize=200&format=json&origin=*';
-  const res = await fetch(url);
-  if(!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  if(!data.query || !data.query.pages) return [];
-  return Object.values(data.query.pages).sort((a, b) => a.index - b.index)
-    .map(p => ({title: p.title, text: p.extract || '', img: p.thumbnail ? p.thumbnail.source : '',
-                 link: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(p.title.replace(/ /g, '_')), lang: lang}));
+function norm(s){
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
 }
-function addFallback(q){
-  const g = 'https://www.google.com/search?q=';
-  const links = [['Google', g + encodeURIComponent(q)], ['GSMArena', g + encodeURIComponent('site:gsmarena.com ' + q)], ['NanoReview', g + encodeURIComponent('site:nanoreview.net ' + q)]];
-  const div = document.createElement('div');
-  div.className = 'extlinks';
-  div.innerHTML = '<span style="font-size:12.5px;color:var(--muted);font-weight:600;padding-top:8px">Tìm thêm “' + esc(q) + '” tại:</span>' + links.map(l => '<a href="' + l[1] + '" target="_blank" rel="noopener">' + l[0] + '</a>').join('');
-  resultsEl.appendChild(div);
-}
-async function doSearch(){
-  const q = qInput.value.trim();
-  if(!q){ statusEl.style.display = 'block'; statusEl.textContent = 'Bạn gõ tên máy hoặc chip cần tìm trước đã nhé.'; return; }
-  statusEl.style.display = 'block'; statusEl.textContent = '⏳ Đang truy vấn trực tiếp Wikipedia…';
-  resultsEl.innerHTML = '';
-  try{
-    let items = await wikiSearch('vi', q);
-    let en = [];
-    try{ en = await wikiSearch('en', q); }catch(e){ /* bỏ qua nếu wiki EN lỗi */ }
-    const seen = new Set(items.map(x => x.title.toLowerCase()));
-    en.forEach(x => { if(!seen.has(x.title.toLowerCase())) items.push(x); });
-    items = items.slice(0, 8);
-    if(!items.length){ statusEl.textContent = 'Wikipedia chưa có bài phù hợp cho “' + q + '” (máy quá mới thường chưa có bài). Bạn tìm tiếp ở các nguồn dưới này nhé:'; addFallback(q); return; }
-    statusEl.textContent = 'Tìm thấy ' + items.length + ' kết quả cho “' + q + '” — dữ liệu vừa lấy trực tiếp từ Wikipedia.';
-    items.forEach(it => {
-      const a = document.createElement('a');
-      a.className = 'result'; a.href = it.link; a.target = '_blank'; a.rel = 'noopener';
-      a.innerHTML = (it.img ? '<img src="' + esc(it.img) + '" alt="">' : '<div class="noimg">📱</div>') +
-        '<div><div class="src">Wikipedia · ' + (it.lang === 'vi' ? 'Tiếng Việt' : 'English') + '</div><h4>' + esc(it.title) + '</h4><p>' + esc(it.text) + '</p></div>';
-      resultsEl.appendChild(a);
-    });
-    addFallback(q);
-  }catch(err){
-    statusEl.textContent = 'Không kết nối được tới Wikipedia từ trình duyệt này. Bạn thử tìm ở các nguồn dưới này nhé:';
-    addFallback(q);
+function searchPhones(q){
+  const nq = norm(q);
+  if(!nq) return [];
+  const tokens = nq.split(' ');
+  const hits = [];
+  for(const p of PHONES){
+    const hay = norm(p.n + ' ' + p.b + ' ' + p.chip + ' ' + p.y);
+    if(tokens.every(t => hay.indexOf(t) !== -1)){
+      const nn = norm(p.n);
+      let score = 0;
+      if(nn.indexOf(nq) === 0) score += 3;
+      if(nn.indexOf(nq) !== -1) score += 2;
+      hits.push({score: score, p: p});
+    }
   }
+  hits.sort((a, b) => (b.score - a.score) || (b.p.y - a.p.y));
+  return hits.map(h => h.p);
+}
+function doSearch(){
+  const q = qInput.value.trim();
+  resultsEl.innerHTML = '';
+  if(!q){ statusEl.style.display = 'block'; statusEl.textContent = 'Bạn gõ tên máy, hãng hoặc chip cần tra trước đã nhé.'; return; }
+  const items = searchPhones(q).slice(0, 10);
+  statusEl.style.display = 'block';
+  if(!items.length){
+    statusEl.textContent = 'Chưa có “' + q + '” trong kho dữ liệu hiện tại (' + PHONES.length + ' máy). Thử gõ ngắn hơn, ví dụ chỉ tên hãng hoặc dòng máy.';
+    return;
+  }
+  statusEl.textContent = 'Tìm thấy ' + items.length + ' máy cho “' + q + '”:';
+  items.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'result'; card.style.cursor = 'default';
+    let specs = '<span>⚙ Chip <b>' + esc(p.chip) + '</b></span>';
+    if(p.scr) specs += '<span>📺 <b>' + esc(p.scr) + '</b></span>';
+    if(p.cam) specs += '<span>📷 Camera chính <b>' + esc(p.cam) + '</b></span>';
+    if(p.pin) specs += '<span>🔋 Pin <b>' + esc(p.pin) + '</b></span>';
+    card.innerHTML = '<div class="noimg">📱</div><div style="flex:1;min-width:0">' +
+      '<div class="src">' + esc(p.b) + ' · ' + p.y + '</div><h4>' + esc(p.n) + '</h4>' +
+      '<div class="specgrid">' + specs + '</div></div>';
+    resultsEl.appendChild(card);
+  });
 }
 document.getElementById('searchBtn').addEventListener('click', doSearch);
 qInput.addEventListener('keydown', e => { if(e.key === 'Enter') doSearch(); });
