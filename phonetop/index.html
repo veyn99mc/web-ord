@@ -127,6 +127,11 @@ section{margin-top:42px; scroll-margin-top:92px}
 .phone .pchip{font-size:12.5px; color:var(--muted); font-weight:600}
 .phone .pscore{font-family:"Space Grotesk",sans-serif; font-size:21px; font-weight:700; margin-top:9px}
 .phone .pscore small{font-size:11.5px; color:var(--muted); font-family:"Be Vietnam Pro",sans-serif; font-weight:600}
+.tabs{display:flex; gap:6px; background:rgba(255,255,255,.65); border:1px solid var(--line); padding:5px; border-radius:999px; margin-bottom:16px}
+.tab{flex:1; font:inherit; font-weight:800; font-size:13.5px; padding:10px 6px; border:0; border-radius:999px; background:transparent; color:var(--muted); cursor:pointer}
+.tab.active{background:var(--grad); color:#fff; box-shadow:0 8px 18px rgba(90,80,220,.30)}
+.phone .pnote{font-size:12.8px; color:var(--muted); margin-top:7px; line-height:1.5}
+.phone .pnote b{color:var(--ink)}
 /* Search */
 .searchbox{background:var(--card); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.9); border-radius:24px; padding:20px; box-shadow:var(--shadow)}
 .searchrow{display:flex; gap:9px}
@@ -224,6 +229,8 @@ footer b{color:var(--ink)}
 
 <section id="may">
   <div class="sec-head"><h2>📱 Điện thoại mạnh nhất <span class="grad">tháng 10/2026</span></h2></div>
+  <div class="tabs"><button class="tab active" data-panel="benchPanel">🏆 Điểm benchmark</button><button class="tab" data-panel="gamePanel">🎮 Chiến game bền bỉ</button></div>
+  <div id="benchPanel">
   <p class="sec-sub">Bảng xếp hạng flagship Android của AnTuTu (bản V12, thị trường Trung Quốc) — điểm trung bình của hàng nghìn lượt đo thực tế.</p>
   <div class="phones">
     <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/10/honor-win-2-doi-mau.jpg" alt="Honor Win 2" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 1</div><h3>Honor Win 2</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.958.339 <small>điểm AnTuTu V12</small></div></div>
@@ -236,6 +243,17 @@ footer b{color:var(--ink)}
     <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/09/oppo-find-x10-pro-max-trang.jpg" alt="OPPO Find X10 Pro Max" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 8</div><h3>OPPO Find X10 Pro Max</h3><div class="pchip">Dimensity 9600 Pro</div><div class="pscore">4.335.762 <small>điểm AnTuTu V12</small></div></div>
     <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/10/honor-win-rt2-da-sac.jpg" alt="Honor Win RT 2" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 9</div><h3>Honor Win RT 2</h3><div class="pchip">Snapdragon 8 Elite Gen 5</div><div class="pscore">4.286.132 <small>điểm AnTuTu V12</small></div></div>
     <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/02/vivo-iqoo-15-ultra-0-1.jpg" alt="iQOO 15 Ultra" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 10</div><h3>iQOO 15 Ultra</h3><div class="pchip">Snapdragon 8 Elite Gen 5</div><div class="pscore">4.274.239 <small>điểm AnTuTu V12</small></div></div>
+  </div>
+  </div>
+  <div id="gamePanel" style="display:none">
+  <p class="sec-sub">Xếp theo khả năng giữ FPS khi chơi game và tải đồ hoạ nặng trong thời gian dài: phần cứng tản nhiệt + kết quả test thực tế (Notebookcheck, Gizmochina, các bài trải nghiệm). Số liệu do hãng công bố có ghi rõ là của hãng.</p>
+  <div class="phones">
+    <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/10/honor-win-2-doi-mau.jpg" alt="Honor Win 2" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 1</div><h3>Honor Win 2</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pnote">🌀 <b>2 quạt tản nhiệt chủ động</b> — cấu hình tản nhiệt mạnh nhất hiện nay, thêm pin 10.100 mAh.</div><div class="pnote">⏱ Hãng công bố giữ ~185 FPS CrossFire 2K suốt 5 giờ; test 30 phút lưng máy chỉ 34,5°C.</div></div>
+    <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/10/red-magic-12-pro-plus-xanh-ro-ri.jpg" alt="RedMagic 12 Pro+" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 2</div><h3>RedMagic 12 Pro+</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pnote">🌀 <b>Quạt + tản nhiệt lỏng khép kín</b>, có chip phụ riêng cho game, màn hình 185Hz.</div><div class="pnote">⏱ FPS gần như không dao động trong các trận đấu dài theo trải nghiệm reviewer.</div></div>
+    <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/10/honor-win-rt2-da-sac.jpg" alt="Honor Win RT 2" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 3</div><h3>Honor Win RT 2</h3><div class="pchip">Snapdragon 8 Elite Gen 5</div><div class="pnote">🌀 <b>Quạt Dongfeng Turbo</b> + viên pin khủng 12.070 mAh cho các phiên chơi dài.</div><div class="pnote">⏱ Test thực tế: Genshin Impact đồ hoạ cao suốt 2 giờ, khung hình phẳng, máy chỉ hơi ấm.</div></div>
+    <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/09/oneplus-16-bac.jpg" alt="OnePlus 16" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 4</div><h3>OnePlus 16</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pnote">❄️ Không quạt — buồng hơi lớn + nhân tối ưu game <b>Fengchi</b> can thiệp sâu vào chip.</div><div class="pnote">⏱ Test 30 phút giữ 184,3/185 FPS ở chế độ 185 FPS, lưng máy tối đa 43,4°C.</div></div>
+    <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/02/vivo-iqoo-15-ultra-0-1.jpg" alt="iQOO 15 Ultra" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 5</div><h3>iQOO 15 Ultra</h3><div class="pchip">Snapdragon 8 Elite Gen 5</div><div class="pnote">🌀 <b>Quạt Ice Dome 17mm</b> + nút trigger cảm ứng lực hai vai, chip game Q3 riêng.</div><div class="pnote">⚠️ Điểm trừ: Notebookcheck đo độc lập độ ổn định 3DMark chỉ 66,8% — vẫn bóp xung, mặt lưng nóng hơn 47°C.</div></div>
+  </div>
   </div>
 </section>
 
@@ -474,6 +492,12 @@ async function toggleSpecs(row){
     box.innerHTML = '<div class="status" style="display:block">Chưa tải được thông số, bạn ấn lại để thử nhé.</div>';
   }
 }
+
+/* ---------- Chuyển tab Top máy ---------- */
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  ['benchPanel', 'gamePanel'].forEach(id => { document.getElementById(id).style.display = (id === t.dataset.panel) ? '' : 'none'; });
+}));
 
 /* ---------- Nút cuộn lên đầu trang ---------- */
 const toTopBtn = document.getElementById('toTop');
