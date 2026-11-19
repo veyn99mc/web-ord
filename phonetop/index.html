@@ -309,6 +309,14 @@ async function wikiSearch(lang, q){
     .map(p => ({title: p.title, text: p.extract || '', img: p.thumbnail ? p.thumbnail.source : '',
                  link: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(p.title.replace(/ /g, '_')), lang: lang}));
 }
+function addFallback(q){
+  const g = 'https://www.google.com/search?q=';
+  const links = [['Google', g + encodeURIComponent(q)], ['GSMArena', g + encodeURIComponent('site:gsmarena.com ' + q)], ['NanoReview', g + encodeURIComponent('site:nanoreview.net ' + q)]];
+  const div = document.createElement('div');
+  div.className = 'extlinks';
+  div.innerHTML = '<span style="font-size:12.5px;color:var(--muted);font-weight:600;padding-top:8px">Tìm thêm “' + esc(q) + '” tại:</span>' + links.map(l => '<a href="' + l[1] + '" target="_blank" rel="noopener">' + l[0] + '</a>').join('');
+  resultsEl.appendChild(div);
+}
 async function doSearch(){
   const q = qInput.value.trim();
   if(!q){ statusEl.style.display = 'block'; statusEl.textContent = 'Bạn gõ tên máy hoặc chip cần tìm trước đã nhé.'; return; }
@@ -321,7 +329,7 @@ async function doSearch(){
     const seen = new Set(items.map(x => x.title.toLowerCase()));
     en.forEach(x => { if(!seen.has(x.title.toLowerCase())) items.push(x); });
     items = items.slice(0, 8);
-    if(!items.length){ statusEl.textContent = 'Không tìm thấy kết quả cho “' + q + '”. Thử gõ tên tiếng Anh hoặc ngắn gọn hơn xem.'; return; }
+    if(!items.length){ statusEl.textContent = 'Wikipedia chưa có bài phù hợp cho “' + q + '” (máy quá mới thường chưa có bài). Bạn tìm tiếp ở các nguồn dưới này nhé:'; addFallback(q); return; }
     statusEl.textContent = 'Tìm thấy ' + items.length + ' kết quả cho “' + q + '” — dữ liệu vừa lấy trực tiếp từ Wikipedia.';
     items.forEach(it => {
       const a = document.createElement('a');
@@ -330,8 +338,10 @@ async function doSearch(){
         '<div><div class="src">Wikipedia · ' + (it.lang === 'vi' ? 'Tiếng Việt' : 'English') + '</div><h4>' + esc(it.title) + '</h4><p>' + esc(it.text) + '</p></div>';
       resultsEl.appendChild(a);
     });
+    addFallback(q);
   }catch(err){
-    statusEl.textContent = 'Không kết nối được tới Wikipedia (mạng hoặc trình duyệt chặn). Bạn thử lại sau ít phút nhé.';
+    statusEl.textContent = 'Không kết nối được tới Wikipedia từ trình duyệt này. Bạn thử tìm ở các nguồn dưới này nhé:';
+    addFallback(q);
   }
 }
 document.getElementById('searchBtn').addEventListener('click', doSearch);
