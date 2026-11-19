@@ -422,6 +422,8 @@ async function searchOnline(q){
     });
     onlineEl.innerHTML = html;
     onlineEl.querySelectorAll('.specbtn').forEach(btn => btn.addEventListener('click', () => toggleSpecs(btn)));
+    const firstBtn = onlineEl.querySelector('.specbtn');
+    if(firstBtn) toggleSpecs(firstBtn);
   }catch(e){
     onlineEl.innerHTML = '<div class="status" style="display:block">🌐 Chưa kết nối được nguồn online lúc này — bạn thử lại sau ít phút nhé.</div>';
   }
