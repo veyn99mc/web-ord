@@ -142,6 +142,11 @@ section{margin-top:52px; scroll-margin-top:92px}
 .extlinks{display:flex; flex-wrap:wrap; gap:8px; margin-top:15px}
 .extlinks a{font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; background:rgba(255,255,255,.85); border:1px solid var(--line); padding:8px 14px; border-radius:999px}
 .extlinks a:hover{border-color:#818cf8}
+.online-head{font-weight:800;font-size:14.5px;margin:18px 0 10px;color:var(--ink)}
+.specbtn{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:none;font:inherit;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer}
+.spectable{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.8px}
+.spectable td{padding:6px 8px;border-top:1px solid var(--border);vertical-align:top;color:var(--muted)}
+.spectable td:first-child{font-weight:700;color:var(--ink);white-space:nowrap;width:32%}
 .specgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:12.5px;color:var(--muted);margin-top:6px}.specgrid b{color:var(--ink);font-weight:700}
 footer{margin-top:58px; text-align:center; color:var(--muted); font-size:12.5px; line-height:1.7}
 footer b{color:var(--ink)}
@@ -204,7 +209,7 @@ footer b{color:var(--ink)}
 
 <section id="timkiem">
   <div class="sec-head"><h2>🔎 Tra cứu <span class="grad">thông số điện thoại</span></h2></div>
-  <p class="sec-sub">Gõ tên máy, tên hãng hoặc tên chip — tra ngay trong kho thông số có sẵn trên trang (tổng hợp từ GSMArena). Chạy tại chỗ trên máy bạn, không cần mạng, gõ không dấu cũng tìm ra.</p>
+  <p class="sec-sub">Gõ tên máy, tên hãng hoặc con chip: máy phổ biến hiện thông số ngay tại chỗ (gõ không dấu cũng ra), đồng thời web tìm thêm trực tiếp trên MobileCity — giá và thông số tiếng Việt hiển thị ngay tại đây, không cần bấm đi đâu khác.</p>
   <div class="searchbox">
     <div class="searchrow">
       <input id="q" type="search" placeholder="Ví dụ: iPhone 18 Pro Max, Snapdragon 8 Elite Gen 6, Galaxy S26 Ultra…" autocomplete="off">
@@ -219,6 +224,7 @@ footer b{color:var(--ink)}
     </div>
     <div class="status" id="searchStatus"></div>
     <div class="results" id="results"></div>
+    <div id="onlineResults"></div>
   </div>
 </section>
 
@@ -366,6 +372,7 @@ function doSearch(){
   const items = searchPhones(q).slice(0, 10);
   statusEl.style.display = 'block';
   if(!items.length){
+    searchOnline(q);
     statusEl.textContent = 'Chưa có “' + q + '” trong kho dữ liệu hiện tại (' + PHONES.length + ' máy). Thử gõ ngắn hơn, ví dụ chỉ tên hãng hoặc dòng máy.';
     return;
   }
@@ -382,10 +389,58 @@ function doSearch(){
       '<div class="specgrid">' + specs + '</div></div>';
     resultsEl.appendChild(card);
   });
+  searchOnline(q);
 }
 document.getElementById('searchBtn').addEventListener('click', doSearch);
 qInput.addEventListener('keydown', e => { if(e.key === 'Enter') doSearch(); });
 document.querySelectorAll('.quick button').forEach(b => b.addEventListener('click', () => { qInput.value = b.dataset.q; doSearch(); }));
+
+/* ---------- Tìm online qua cầu nối MobileCity (Cloudflare Worker) ---------- */
+const BRIDGE = 'https://phonetop-bridge.minhchien27111999.workers.dev';
+const onlineEl = document.getElementById('onlineResults');
+async function searchOnline(q){
+  onlineEl.innerHTML = '<div class="status" style="display:block">⏳ Đang tìm thêm trên MobileCity (online)…</div>';
+  try{
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 25000);
+    const res = await fetch(BRIDGE + '/search?q=' + encodeURIComponent(q), { signal: ctrl.signal });
+    clearTimeout(timer);
+    const data = await res.json();
+    if(!data.results || !data.results.length){
+      onlineEl.innerHTML = '<div class="status" style="display:block">🌐 MobileCity cũng không có kết quả cho “' + esc(q) + '”.</div>';
+      return;
+    }
+    let html = '<div class="online-head">🌐 Kết quả online từ MobileCity — bấm “Xem thông số” để xem ngay tại đây:</div>';
+    data.results.forEach(p => {
+      html += '<div class="result" style="cursor:default">' +
+        (p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy" onerror="this.remove()">' : '<div class="noimg">📱</div>') +
+        '<div style="flex:1;min-width:0"><div class="src">MobileCity · giá tham khảo</div><h4>' + esc(p.name) + '</h4>' +
+        '<p>' + (p.price ? 'Giá: <b style="color:#c44d48">' + esc(p.price) + '</b> · ' : '') + '<button class="specbtn" data-url="' + esc(p.url) + '">Xem thông số ▾</button></p>' +
+        '<div class="specbox" style="display:none"></div></div></div>';
+    });
+    onlineEl.innerHTML = html;
+    onlineEl.querySelectorAll('.specbtn').forEach(btn => btn.addEventListener('click', () => toggleSpecs(btn)));
+  }catch(e){
+    onlineEl.innerHTML = '<div class="status" style="display:block">🌐 Chưa kết nối được nguồn online lúc này — bạn thử lại sau ít phút nhé.</div>';
+  }
+}
+async function toggleSpecs(btn){
+  const box = btn.parentElement.parentElement.querySelector('.specbox');
+  if(box.style.display !== 'none'){ box.style.display = 'none'; btn.textContent = 'Xem thông số ▾'; return; }
+  if(box.dataset.loaded){ box.style.display = 'block'; btn.textContent = 'Ẩn thông số ▴'; return; }
+  btn.textContent = 'Đang tải…';
+  try{
+    const res = await fetch(BRIDGE + '/specs?url=' + encodeURIComponent(btn.dataset.url));
+    const data = await res.json();
+    if(!data.specs || !data.specs.length) throw new Error('empty');
+    box.innerHTML = '<table class="spectable">' + data.specs.map(r => '<tr><td>' + esc(r.label) + '</td><td>' + esc(r.value) + '</td></tr>').join('') + '</table>';
+    box.dataset.loaded = '1'; box.style.display = 'block'; btn.textContent = 'Ẩn thông số ▴';
+  }catch(e){
+    btn.textContent = 'Xem thông số ▾';
+    box.innerHTML = '<div class="status" style="display:block">Chưa tải được thông số, bạn thử lại nhé.</div>';
+    box.style.display = 'block';
+  }
+}
 
 /* ---------- Hiệu ứng hiện dần khi cuộn ---------- */
 const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .08});
