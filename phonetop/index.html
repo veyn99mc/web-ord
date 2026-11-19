@@ -132,6 +132,10 @@ section{margin-top:42px; scroll-margin-top:92px}
 .tab.active{background:var(--grad); color:#fff; box-shadow:0 8px 18px rgba(90,80,220,.30)}
 .phone .pnote{font-size:12.8px; color:var(--muted); margin-top:7px; line-height:1.5}
 .phone .pnote b{color:var(--ink)}
+.updrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:-2px 0 16px}
+.updbtn{font:inherit; font-weight:800; font-size:13.5px; padding:10px 16px; border:0; border-radius:999px; background:var(--grad); color:#fff; cursor:pointer; box-shadow:0 8px 18px rgba(90,80,220,.28)}
+.updbtn:disabled{opacity:.55; cursor:wait}
+.updnote{font-size:12.8px; color:var(--muted)}
 /* Search */
 .searchbox{background:var(--card); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.9); border-radius:24px; padding:20px; box-shadow:var(--shadow)}
 .searchrow{display:flex; gap:9px}
@@ -231,8 +235,9 @@ footer b{color:var(--ink)}
   <div class="sec-head"><h2>📱 Điện thoại mạnh nhất <span class="grad">tháng 10/2026</span></h2></div>
   <div class="tabs"><button class="tab active" data-panel="benchPanel">🏆 Điểm benchmark</button><button class="tab" data-panel="gamePanel">🎮 Chiến game bền bỉ</button></div>
   <div id="benchPanel">
-  <p class="sec-sub">Bảng xếp hạng flagship Android của AnTuTu (bản V12, thị trường Trung Quốc) — điểm trung bình của hàng nghìn lượt đo thực tế.</p>
-  <div class="phones">
+  <p class="sec-sub" id="benchSub">Bảng xếp hạng flagship Android của AnTuTu (bản V12, thị trường Trung Quốc) — điểm trung bình của hàng nghìn lượt đo thực tế.</p>
+  <div class="updrow"><button id="updBtn" class="updbtn" onclick="refreshAntutu()">🔄 Cập nhật bảng mới nhất từ AnTuTu</button><span id="updNote" class="updnote"></span></div>
+  <div class="phones" id="benchGrid">
     <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/10/honor-win-2-doi-mau.jpg" alt="Honor Win 2" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 1</div><h3>Honor Win 2</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.958.339 <small>điểm AnTuTu V12</small></div></div>
     <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/10/red-magic-12-pro-plus-xanh-ro-ri.jpg" alt="RedMagic 12 Pro+" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 2</div><h3>RedMagic 12 Pro+</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.956.846 <small>điểm AnTuTu V12</small></div></div>
     <div class="phone reveal"><img class="pimg" src="https://cdn.mobilecity.vn/mobilecity-vn/images/2026/09/vivo-iqoo-16-da-sac.jpg" alt="iQOO 16" loading="lazy" onerror="this.remove()"><div class="pos">HẠNG 3</div><h3>iQOO 16</h3><div class="pchip">Snapdragon 8 Elite Extreme Gen 6</div><div class="pscore">4.865.546 <small>điểm AnTuTu V12</small></div></div>
@@ -491,6 +496,31 @@ async function toggleSpecs(row){
   }catch(e){
     box.innerHTML = '<div class="status" style="display:block">Chưa tải được thông số, bạn ấn lại để thử nhé.</div>';
   }
+}
+
+/* ---------- Cập nhật bảng AnTuTu qua cầu nối ---------- */
+async function refreshAntutu() {
+  const btn = document.getElementById('updBtn'), note = document.getElementById('updNote');
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ Đang lấy bảng mới…'; note.textContent = '';
+  try {
+    const r = await fetch(BRIDGE + '/antutu');
+    const d = await r.json();
+    if (!d.list || d.list.length < 5) throw new Error('bad data');
+    const fmt = n => n.toLocaleString('vi-VN');
+    document.getElementById('benchGrid').innerHTML = d.list.map(p =>
+      '<div class="phone in">' +
+      (p.image ? '<img class="pimg" src="' + p.image + '" alt="' + p.name + '" loading="lazy" onerror="this.remove()">' : '') +
+      '<div class="pos">HẠNG ' + p.rank + '</div><h3>' + p.name + '</h3>' +
+      '<div class="pchip">' + p.chip + (p.config ? ' · ' + p.config : '') + '</div>' +
+      '<div class="pscore">' + fmt(p.score) + ' <small>điểm AnTuTu V12</small></div></div>'
+    ).join('');
+    if (d.chart) document.getElementById('benchSub').textContent = 'Bảng xếp hạng flagship Android của AnTuTu (bản V12, thị trường Trung Quốc) — ' + d.chart + ', vừa lấy trực tiếp từ antutu.com.';
+    note.textContent = '✅ Đã cập nhật xong.';
+  } catch (e) {
+    note.textContent = '⚠️ Chưa lấy được bảng mới — vẫn đang hiển thị dữ liệu đã lưu.';
+  }
+  btn.disabled = false; btn.textContent = old;
 }
 
 /* ---------- Chuyển tab Top máy ---------- */
