@@ -27,7 +27,7 @@ button,input,select,textarea{font:inherit}button{border:0;cursor:pointer;border-
 </style></head>
 <body><div class="wrap">
 <header class="top"><div><h1>📒 Sổ giá sản phẩm</h1><div class="sub">Lưu nhanh và tra cứu giá rượu bia, hàng hóa</div></div><div class="top-actions"><button class="soft" id="catsBtn">Danh mục</button><button class="primary" id="addBtn">＋ Thêm</button></div></header>
-<div class="toolbar"><div class="search"><input id="search" type="search" placeholder="Tìm tên sản phẩm, danh mục..." autocomplete="off"></div></div>
+<div class="toolbar"><div class="search"><input id="search" type="search" placeholder="Tìm tên sản phẩm, danh mục..." autocomplete="off"></div><button class="soft" id="ioBtn" type="button">⇅ Xuất / Nhập</button></div>
 <div class="filters" id="filters"></div><div class="summary"><span id="count">0 sản phẩm</span><span>Giá lưu trên thiết bị này</span></div><main class="list" id="list"></main>
 <div class="foot">Dữ liệu tự lưu trên trình duyệt · Nên sao lưu dữ liệu định kỳ</div></div>
 
@@ -45,6 +45,12 @@ button,input,select,textarea{font:inherit}button{border:0;cursor:pointer;border-
 <p style="font-size:13px;color:#7b8790;margin-top:-5px">Dùng mũi tên để đổi thứ tự hiển thị. Danh mục đang có sản phẩm không thể xóa.</p>
 <div class="field"><label for="newCat">Tạo danh mục mới</label><div class="category-line"><input id="newCat" maxlength="40" placeholder="VD: Bia, Rượu mạnh..."><button class="primary" id="createCat" type="button">Thêm</button></div></div>
 <div id="catList"></div></section></div>
+<div class="backdrop" id="ioBackdrop"><section class="modal" role="dialog" aria-modal="true">
+<div class="modal-head"><h2>Xuất / Nhập dữ liệu</h2><button class="x" id="closeIo">✕</button></div>
+<p style="color:var(--muted);font-size:13px;margin:0 0 14px">Xuất toàn bộ sổ giá ra 1 file để gửi cho người khác dùng chung: người kia mở trang này, bấm Nhập file là có y nguyên dữ liệu.<br><b>Lưu ý:</b> Nhập file sẽ ghi đè toàn bộ dữ liệu hiện tại trên máy này.</p>
+<div class="actions" style="margin-top:0"><button class="primary" type="button" id="exportBtn">⬇ Xuất file</button><button class="soft" type="button" id="importBtn">⬆ Nhập file</button></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+</section></div>
 
 <script>
 (()=>{
@@ -84,6 +90,10 @@ $('catsBtn').onclick=()=>{$('catBackdrop').classList.add('show');renderCatManage
 $('createCat').onclick=()=>{const name=$('newCat').value;if(addCategory(name)){$('newCat').value='';$('pcat').value=name.trim()}};
 $('newCat').addEventListener('keydown',e=>{if(e.key==='Enter'){$('createCat').click()}});
 $('catList').onclick=e=>{const up=e.target.closest('[data-up]'),down=e.target.closest('[data-down]'),del=e.target.closest('[data-delcat]');if(up||down){const i=Number((up||down).dataset[up?'up':'down']),j=up?i-1:i+1;[categories[i],categories[j]]=[categories[j],categories[i]];save();render()}else if(del){const c=del.dataset.delcat;if(products.some(p=>p.category===c)){alert('Danh mục này vẫn còn sản phẩm. Hãy chuyển hoặc xóa sản phẩm trước.');return}if(confirm(`Xóa danh mục "${c}"?`)){categories=categories.filter(x=>x!==c);if(activeCategory===c)activeCategory='Tất cả';save();render()}}};
+$('ioBtn').onclick=()=>$('ioBackdrop').classList.add('show');$('closeIo').onclick=()=>$('ioBackdrop').classList.remove('show');$('ioBackdrop').onclick=e=>{if(e.target===$('ioBackdrop'))$('ioBackdrop').classList.remove('show')};
+$('exportBtn').onclick=()=>{const data={app:'so-gia-san-pham',version:1,exportedAt:new Date().toISOString(),categories,products};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');const d=new Date();a.href=URL.createObjectURL(blob);a.download='so-gia-san-pham-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d||typeof d!=='object'||!Array.isArray(d.products))throw new Error('bad');const seen=new Set();const clean=[];for(const p of d.products){if(!p||typeof p.name!=='string'||!p.name.trim())throw new Error('bad');const price=Number(p.price);if(!Number.isFinite(price)||price<0)throw new Error('bad');let id=Number(p.id);if(!Number.isFinite(id)||seen.has(id))id=Date.now()+clean.length;seen.add(id);clean.push({id,name:p.name.trim(),category:(typeof p.category==='string'&&p.category.trim())?p.category.trim():'Chưa phân loại',unit:typeof p.unit==='string'?p.unit:'',price,note:typeof p.note==='string'?p.note:''})}const cats=Array.isArray(d.categories)?d.categories.filter(c=>typeof c==='string'&&c.trim()).map(c=>c.trim()):[];if(!confirm(`Nhập file sẽ GHI ĐÈ toàn bộ dữ liệu hiện tại trên máy này.\nFile chứa ${clean.length} sản phẩm, ${cats.length} danh mục. Tiếp tục?`))return;products=clean;categories=cats;syncCategories();activeCategory='Tất cả';$('search').value='';$('ioBackdrop').classList.remove('show');render();alert(`Đã nhập xong ${clean.length} sản phẩm.`)}catch(err){alert('File không hợp lệ. Hãy chọn đúng file được xuất từ Sổ giá sản phẩm.')}};rd.readAsText(f)};
 render();
 })();
 </script></body></html>
